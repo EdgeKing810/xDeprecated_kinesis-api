@@ -1,2 +1,2 @@
 users=users.txt
-weird=weird.txt
+weird=not_weird.txt

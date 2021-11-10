@@ -19,6 +19,16 @@ impl Mapping {
         id: &str,
         file_name: &str,
     ) -> Result<(), String> {
+        if !String::from(id).chars().all(|c| c.is_alphanumeric())
+            || (!String::from(file_name).chars().all(|c| c.is_alphanumeric())
+                && !file_name.contains(".txt"))
+        {
+            return Err(format!(
+                "Invalid character (perhaps a symbol?) found in id or file_name ({})",
+                id
+            ));
+        }
+
         let mut found = false;
         for mapping in all_mappings.iter() {
             if mapping.id == id || mapping.file_name == file_name {
@@ -37,6 +47,80 @@ impl Mapping {
         };
 
         all_mappings.push(new_mapping);
+        Ok(())
+    }
+
+    pub fn update(
+        all_mappings: &mut Vec<Mapping>,
+        id: &str,
+        file_name: &str,
+    ) -> Result<(), String> {
+        if !String::from(id).chars().all(|c| c.is_alphanumeric())
+            || (!String::from(file_name).chars().all(|c| c.is_alphanumeric())
+                && !file_name.contains(".txt"))
+        {
+            return Err(format!(
+                "Invalid character (perhaps a symbol?) found in id or file_name ({})",
+                id
+            ));
+        }
+
+        let mut found = false;
+        for mapping in all_mappings.iter() {
+            if mapping.id == id {
+                found = true;
+            }
+
+            if mapping.file_name == file_name {
+                return Err(format!(
+                    "Another Mapping is already using this file_name ({}, {})",
+                    id, file_name
+                ));
+            }
+        }
+
+        if !found {
+            return Err(format!("No Mapping with this id found ({})", id));
+        }
+
+        let new_mappings = all_mappings
+            .iter()
+            .map(|mapping| {
+                if mapping.id == id {
+                    return Mapping {
+                        id: mapping.id.clone(),
+                        file_name: String::from(file_name),
+                    };
+                } else {
+                    return mapping.clone();
+                }
+            })
+            .collect::<Vec<Mapping>>();
+        *all_mappings = new_mappings;
+
+        Ok(())
+    }
+
+    pub fn remove(all_mappings: &mut Vec<Mapping>, id: &str) -> Result<(), String> {
+        let mut found = false;
+        for mapping in all_mappings.iter() {
+            if mapping.id == id {
+                found = true;
+                break;
+            }
+        }
+
+        if !found {
+            return Err(format!("No Mapping with this id found ({})", id));
+        }
+
+        let new_mappings = all_mappings
+            .iter()
+            .filter(|mapping| mapping.id != id)
+            .map(|mapping| mapping.clone())
+            .collect::<Vec<Mapping>>();
+        *all_mappings = new_mappings;
+
         Ok(())
     }
 }
