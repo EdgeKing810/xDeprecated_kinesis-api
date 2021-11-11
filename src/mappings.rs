@@ -131,8 +131,8 @@ impl Mapping {
     }
 }
 
-pub fn fetch_all_mappings(other_path: &str) -> Vec<Mapping> {
-    let all_mappings_raw = fetch_file(String::from(other_path));
+pub fn fetch_all_mappings(path: &str) -> Vec<Mapping> {
+    let all_mappings_raw = fetch_file(String::from(path));
 
     let individual_mappings = all_mappings_raw
         .split("\n")
@@ -149,7 +149,7 @@ pub fn fetch_all_mappings(other_path: &str) -> Vec<Mapping> {
     final_mappings
 }
 
-pub fn save_all_mappings(mappings: Vec<Mapping>, path: &str) {
+pub fn save_all_mappings(mappings: &Vec<Mapping>, path: &str) {
     let mut stringified_mappings = String::new();
     for mapping in mappings {
         stringified_mappings = format!(
@@ -167,4 +167,22 @@ pub fn save_all_mappings(mappings: Vec<Mapping>, path: &str) {
 
     save_file(String::from(path), stringified_mappings);
     println!("Mappings saved!");
+}
+
+pub fn get_file_name(id: &str, mappings: &Vec<Mapping>) -> Result<String, String> {
+    let mut path = String::new();
+    let mut found = false;
+    for mapping in mappings {
+        if mapping.id == id {
+            found = true;
+            path = mapping.file_name.clone();
+            break;
+        }
+    }
+
+    if !found {
+        return Err(String::from("Error: No mapping with this id"));
+    }
+
+    Ok(path)
 }
