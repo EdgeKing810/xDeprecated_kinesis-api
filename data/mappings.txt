@@ -1,2 +1,1 @@
-users=users.txt
-weird=not_weird.txt
+users=data/users.txt

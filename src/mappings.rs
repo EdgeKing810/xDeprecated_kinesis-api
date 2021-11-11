@@ -1,6 +1,8 @@
+#![allow(dead_code)]
+
 use crate::io::{fetch_file, save_file};
 
-#[derive(Debug, Clone)]
+#[derive(Default, Debug, Clone)]
 pub struct Mapping {
     id: String,
     file_name: String,
@@ -19,7 +21,7 @@ impl Mapping {
         id: &str,
         file_name: &str,
     ) -> Result<(), String> {
-        if !String::from(id).chars().all(|c| c.is_alphanumeric())
+        if (!String::from(id).chars().all(|c| c.is_alphanumeric()) && !id.contains("_"))
             || (!String::from(file_name).chars().all(|c| c.is_alphanumeric())
                 && !file_name.contains(".txt"))
         {
@@ -123,10 +125,15 @@ impl Mapping {
 
         Ok(())
     }
+
+    pub fn get_file_name(self: &Self) -> String {
+        self.file_name.clone()
+    }
 }
 
-pub fn fetch_all_mappings() -> Vec<Mapping> {
-    let all_mappings_raw = fetch_file(String::from("mappings.txt"));
+pub fn fetch_all_mappings(other_path: &str) -> Vec<Mapping> {
+    let all_mappings_raw = fetch_file(String::from(other_path));
+
     let individual_mappings = all_mappings_raw
         .split("\n")
         .filter(|line| line.chars().count() >= 3);
@@ -142,7 +149,7 @@ pub fn fetch_all_mappings() -> Vec<Mapping> {
     final_mappings
 }
 
-pub fn save_all_mappings(mappings: Vec<Mapping>) {
+pub fn save_all_mappings(mappings: Vec<Mapping>, path: &str) {
     let mut stringified_mappings = String::new();
     for mapping in mappings {
         stringified_mappings = format!(
@@ -158,6 +165,6 @@ pub fn save_all_mappings(mappings: Vec<Mapping>) {
         );
     }
 
-    save_file(String::from("mappings.txt"), stringified_mappings);
+    save_file(String::from(path), stringified_mappings);
     println!("Mappings saved!");
 }

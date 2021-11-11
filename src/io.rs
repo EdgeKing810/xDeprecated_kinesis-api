@@ -1,10 +1,7 @@
-use std::{fs::File, io::prelude::*, io::BufReader};
-
-const PRE_PATH: &str = "data";
+use std::{fs, fs::File, io::prelude::*, io::BufReader};
 
 pub fn fetch_file(path: String) -> String {
-    let final_path: String = format!("{}/{}", PRE_PATH, path);
-    let file = File::open(&final_path);
+    let file = File::open(&path);
     let mut content = String::new();
 
     ensure_file_exists(&path);
@@ -14,7 +11,7 @@ pub fn fetch_file(path: String) -> String {
             let mut buf_reader = BufReader::new(f);
             let read_file = buf_reader.read_to_string(&mut content);
             if let Err(e) = read_file {
-                println!("Error occured while reading file at {}: {}", final_path, e);
+                println!("Error occured while reading file at {}: {}", path, e);
             }
         }
         _ => {}
@@ -38,15 +35,22 @@ pub fn ensure_file_exists(path: &String) {
 }
 
 pub fn save_file(path: String, data: String) {
-    let final_path: String = format!("{}/{}", PRE_PATH, path);
-    ensure_file_exists(&final_path);
-    let file = File::create(&final_path);
+    ensure_file_exists(&path);
+    let file = File::create(&path);
 
     if let Ok(mut f) = file {
         let write_file = f.write_all(data.as_bytes());
 
         if let Err(e) = write_file {
-            println!("Error occured while writing file at {}: {}", &final_path, e);
+            println!("Error occured while writing file at {}: {}", &path, e);
         }
+    }
+}
+
+pub fn remove_file(path: String) {
+    ensure_file_exists(&path);
+    let remove_file_result = fs::remove_file(&path);
+    if let Err(e) = remove_file_result {
+        println!("Error while removing file: {} ({})", e, path);
     }
 }
