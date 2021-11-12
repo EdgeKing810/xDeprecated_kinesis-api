@@ -11,8 +11,8 @@ pub struct Mapping {
 impl Mapping {
     fn create_no_check(id: &str, file_name: &str) -> Mapping {
         Mapping {
-            id: String::from(id),
-            file_name: String::from(file_name),
+            id: String::from(id.trim()),
+            file_name: String::from(file_name.trim()),
         }
     }
 
@@ -21,8 +21,10 @@ impl Mapping {
         id: &str,
         file_name: &str,
     ) -> Result<(), String> {
-        if (!String::from(id).chars().all(|c| c.is_alphanumeric()) && !id.contains("_"))
-            || (!String::from(file_name).chars().all(|c| c.is_alphanumeric())
+        if (!String::from(id).chars().all(|c| c.is_ascii_alphanumeric()) && !id.contains("_"))
+            || (!String::from(file_name)
+                .chars()
+                .all(|c| c.is_ascii_alphanumeric())
                 && !file_name.contains(".txt"))
         {
             return Err(format!(
@@ -44,8 +46,8 @@ impl Mapping {
         }
 
         let new_mapping = Mapping {
-            id: String::from(id),
-            file_name: String::from(file_name),
+            id: String::from(id.trim()),
+            file_name: String::from(file_name.trim()),
         };
 
         all_mappings.push(new_mapping);
@@ -57,8 +59,10 @@ impl Mapping {
         id: &str,
         file_name: &str,
     ) -> Result<(), String> {
-        if !String::from(id).chars().all(|c| c.is_alphanumeric())
-            || (!String::from(file_name).chars().all(|c| c.is_alphanumeric())
+        if !String::from(id).chars().all(|c| c.is_ascii_alphanumeric())
+            || (!String::from(file_name)
+                .chars()
+                .all(|c| c.is_ascii_alphanumeric())
                 && !file_name.contains(".txt"))
         {
             return Err(format!(
@@ -90,8 +94,8 @@ impl Mapping {
             .map(|mapping| {
                 if mapping.id == id {
                     return Mapping {
-                        id: mapping.id.clone(),
-                        file_name: String::from(file_name),
+                        id: mapping.id.trim().to_string(),
+                        file_name: String::from(file_name.trim()),
                     };
                 } else {
                     return mapping.clone();

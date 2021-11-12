@@ -1,7 +1,8 @@
 #[cfg(test)]
 use crate::{
     io::remove_file,
-    mappings::{fetch_all_mappings, Mapping},
+    mappings::{fetch_all_mappings, save_all_mappings, Mapping},
+    user::{fetch_all_users, save_all_users, User},
 };
 
 #[test]
@@ -42,4 +43,92 @@ fn test_mappings() {
 
     let remove_weird3 = Mapping::remove(&mut all_mappings, "weird3");
     assert_eq!(remove_weird3, Ok(()));
+
+    save_all_mappings(&all_mappings, file_name);
+}
+
+#[test]
+fn test_users() {
+    let file_name: &str = "data/users_test.txt";
+    remove_file(file_name.to_string());
+
+    let mut all_users = fetch_all_users(file_name.to_string());
+    println!("{:#?}", all_users);
+
+    let test_user = User::create(&mut all_users, "Test", "Tester", "test", "Test123*", 0);
+    assert_eq!(test_user, Ok(()));
+
+    let test_user2 = User::create(&mut all_users, "Test2", "Tester", "test2", "Test123*", 0);
+    assert_eq!(
+        test_user2,
+        Err(String::from(
+            "Error: first_name contains an invalid character"
+        ))
+    );
+
+    let test_user2 = User::create(&mut all_users, "Test", "Tester2", "test2", "Test123*", 0);
+    assert_eq!(
+        test_user2,
+        Err(String::from(
+            "Error: last_name contains an invalid character"
+        ))
+    );
+
+    let test_user2 = User::create(&mut all_users, "Test", "Tester", "test", "Test123*", 0);
+    assert_eq!(
+        test_user2,
+        Err(String::from("Error: username already taken"))
+    );
+
+    let test_user2 = User::create(&mut all_users, "Test", "Tester", "test2", "Test", 0);
+    assert_eq!(
+        test_user2,
+        Err(String::from(
+            "Error: password should be longer than 7 characters"
+        ))
+    );
+
+    let test_user2 = User::create(&mut all_users, "Test", "Tester", "test2", "testtest", 0);
+    assert_eq!(
+        test_user2,
+        Err(String::from(
+            "Error: password should contain at least 1 uppercase alphabetic character"
+        ))
+    );
+
+    let test_user2 = User::create(&mut all_users, "Test", "Tester", "test2", "TESTTEST", 0);
+    assert_eq!(
+        test_user2,
+        Err(String::from(
+            "Error: password should contain at least 1 lowercase alphabetic character"
+        ))
+    );
+
+    let test_user2 = User::create(&mut all_users, "Test", "Tester", "test2", "testTEST", 0);
+    assert_eq!(
+        test_user2,
+        Err(String::from(
+            "Error: password should contain at least 1 number"
+        ))
+    );
+
+    let test_user2 = User::create(&mut all_users, "Test", "Tester", "test2", "Test123;", 0);
+    assert_eq!(
+        test_user2,
+        Err(String::from(
+            "Error: password contains a forbidden character (;)"
+        ))
+    );
+
+    let test_user2 = User::create(
+        &mut all_users,
+        "Test",
+        "Tester",
+        "te_st",
+        "Test123*&^()[]{}*-_",
+        0,
+    );
+    assert_eq!(test_user2, Ok(()));
+
+    save_all_users(&all_users, file_name);
 }

@@ -1,11 +1,13 @@
+#![allow(dead_code)]
+
 use io::remove_file;
-use mappings::{fetch_all_mappings, save_all_mappings, get_file_name, Mapping};
-use user::{User, fetch_all_users};
+use mappings::{fetch_all_mappings, get_file_name, save_all_mappings, Mapping};
+use user::{fetch_all_users, User};
 
 mod io;
 mod mappings;
-mod user;
 mod tests;
+mod user;
 
 const MAPPINGS_PATH: &str = "data/mappings.txt";
 
@@ -14,8 +16,8 @@ fn main() {
 }
 
 fn initialize() {
-    let all_mappings  = initialize_mappings();
-    let all_users = initialize_users(&all_mappings);
+    let all_mappings = initialize_mappings();
+    let all_users: Vec<User> = initialize_users(&all_mappings);
     println!("{:#?}", all_users);
 }
 
@@ -30,16 +32,16 @@ fn initialize_mappings() -> Vec<Mapping> {
     fetched_mappings
 }
 
-fn initialize_users(mappings: &Vec<Mapping>) {
+fn initialize_users(mappings: &Vec<Mapping>) -> Vec<User> {
     let all_users_path = get_file_name("users", mappings);
     let mut all_users = Vec::<User>::new();
-    
+
     if let Ok(path) = all_users_path {
         let fetched_users = fetch_all_users(path.clone());
         all_users = fetched_users;
     }
 
-    all_users;
+    all_users
 }
 
 fn reset_db(all_mappings: Vec<Mapping>) {
