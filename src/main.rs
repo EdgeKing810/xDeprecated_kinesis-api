@@ -17,8 +17,12 @@ fn main() {
 
 fn initialize() {
     let all_mappings = initialize_mappings();
-    let all_users: Vec<User> = initialize_users(&all_mappings);
-    println!("{:#?}", all_users);
+    let mut all_users: Vec<User> = initialize_users(&all_mappings);
+
+    println!(
+        "{:#?}",
+        User::login(&mut all_users, "EdgeKing810", "Test123*")
+    );
 }
 
 fn initialize_mappings() -> Vec<Mapping> {

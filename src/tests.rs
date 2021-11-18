@@ -55,10 +55,26 @@ fn test_users() {
     let mut all_users = fetch_all_users(file_name.to_string());
     println!("{:#?}", all_users);
 
-    let test_user = User::create(&mut all_users, "Test", "Tester", "test", "Test123*", 0);
+    let test_user = User::create(
+        &mut all_users,
+        "Test",
+        "Tester",
+        "test",
+        "test@test.com",
+        "Test123*",
+        0,
+    );
     assert_eq!(test_user, Ok(()));
 
-    let test_user2 = User::create(&mut all_users, "Test2", "Tester", "test2", "Test123*", 0);
+    let test_user2 = User::create(
+        &mut all_users,
+        "Test2",
+        "Tester",
+        "test2",
+        "test@test2.com",
+        "Test123*",
+        0,
+    );
     assert_eq!(
         test_user2,
         Err(String::from(
@@ -66,7 +82,15 @@ fn test_users() {
         ))
     );
 
-    let test_user2 = User::create(&mut all_users, "Test", "Tester2", "test2", "Test123*", 0);
+    let test_user2 = User::create(
+        &mut all_users,
+        "Test",
+        "Tester2",
+        "test2",
+        "test@test2.com",
+        "Test123*",
+        0,
+    );
     assert_eq!(
         test_user2,
         Err(String::from(
@@ -74,13 +98,68 @@ fn test_users() {
         ))
     );
 
-    let test_user2 = User::create(&mut all_users, "Test", "Tester", "test", "Test123*", 0);
+    let test_user2 = User::create(
+        &mut all_users,
+        "Test",
+        "Tester",
+        "test",
+        "test@test2.com",
+        "Test123*",
+        0,
+    );
     assert_eq!(
         test_user2,
         Err(String::from("Error: username already taken"))
     );
 
-    let test_user2 = User::create(&mut all_users, "Test", "Tester", "test2", "Test", 0);
+    let test_user2 = User::create(
+        &mut all_users,
+        "Test",
+        "Tester",
+        "test2",
+        "test@test.com",
+        "Test123*",
+        0,
+    );
+    assert_eq!(test_user2, Err(String::from("Error: email already taken")));
+
+    let test_user2 = User::create(
+        &mut all_users,
+        "Test",
+        "Tester",
+        "test2",
+        "test@@test2.teeeeeeeeest",
+        "Test123*",
+        0,
+    );
+    assert_eq!(
+        test_user2,
+        Err(String::from("Error: Invalid email address"))
+    );
+
+    let test_user2 = User::create(
+        &mut all_users,
+        "Test",
+        "Tester",
+        "test2",
+        "test@test2..teeeeeeeeest",
+        "Test123*",
+        0,
+    );
+    assert_eq!(
+        test_user2,
+        Err(String::from("Error: Invalid email address"))
+    );
+
+    let test_user2 = User::create(
+        &mut all_users,
+        "Test",
+        "Tester",
+        "test2",
+        "test@test2.com",
+        "Test",
+        0,
+    );
     assert_eq!(
         test_user2,
         Err(String::from(
@@ -88,7 +167,15 @@ fn test_users() {
         ))
     );
 
-    let test_user2 = User::create(&mut all_users, "Test", "Tester", "test2", "testtest", 0);
+    let test_user2 = User::create(
+        &mut all_users,
+        "Test",
+        "Tester",
+        "test2",
+        "test@test2.com",
+        "testtest",
+        0,
+    );
     assert_eq!(
         test_user2,
         Err(String::from(
@@ -96,7 +183,15 @@ fn test_users() {
         ))
     );
 
-    let test_user2 = User::create(&mut all_users, "Test", "Tester", "test2", "TESTTEST", 0);
+    let test_user2 = User::create(
+        &mut all_users,
+        "Test",
+        "Tester",
+        "test2",
+        "test@test2.com",
+        "TESTTEST",
+        0,
+    );
     assert_eq!(
         test_user2,
         Err(String::from(
@@ -104,7 +199,15 @@ fn test_users() {
         ))
     );
 
-    let test_user2 = User::create(&mut all_users, "Test", "Tester", "test2", "testTEST", 0);
+    let test_user2 = User::create(
+        &mut all_users,
+        "Test",
+        "Tester",
+        "test2",
+        "test@test2.com",
+        "testTEST",
+        0,
+    );
     assert_eq!(
         test_user2,
         Err(String::from(
@@ -112,7 +215,15 @@ fn test_users() {
         ))
     );
 
-    let test_user2 = User::create(&mut all_users, "Test", "Tester", "test2", "Test123;", 0);
+    let test_user2 = User::create(
+        &mut all_users,
+        "Test",
+        "Tester",
+        "test2",
+        "test@test2.com",
+        "Test123;",
+        0,
+    );
     assert_eq!(
         test_user2,
         Err(String::from(
@@ -125,6 +236,7 @@ fn test_users() {
         "Test",
         "Tester",
         "te_st",
+        "test@test2.com",
         "Test123*&^()[]{}*-_",
         0,
     );

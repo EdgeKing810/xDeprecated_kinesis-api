@@ -7,4 +7,5 @@ edition = "2018"
 
 [dependencies]
 uuid = { version = "0.8.2", features = ["v4"] }
-pwhash = "1"
+pwhash = "1.0.0"
+regex = "1"
