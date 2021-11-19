@@ -2,6 +2,7 @@
 use crate::{
     io::remove_file,
     mappings::{fetch_all_mappings, save_all_mappings, Mapping},
+    project::{fetch_all_projects, save_all_projects, Project},
     user::{fetch_all_users, save_all_users, User},
 };
 
@@ -243,4 +244,120 @@ fn test_users() {
     assert_eq!(test_user2, Ok(()));
 
     save_all_users(&all_users, file_name);
+}
+
+#[test]
+fn test_projects() {
+    let file_name: &str = "data/projects_test.txt";
+    remove_file(file_name.to_string());
+
+    let mut all_projects = fetch_all_projects(file_name.to_string());
+    println!("{:#?}", all_projects);
+
+    let test_project = Project::create(
+        &mut all_projects,
+        "test",
+        "Test Project",
+        "This is a test project.",
+        "/api/v1/projects",
+    );
+    assert_eq!(test_project, Ok(()));
+
+    let test_project2 = Project::create(
+        &mut all_projects,
+        "test ",
+        "Test Project",
+        "This is a test project.",
+        "/api/v1/projects",
+    );
+    assert_eq!(
+        test_project2,
+        Err(String::from("Error: id contains an invalid character"))
+    );
+
+    let test_project2 = Project::create(
+        &mut all_projects,
+        "test",
+        "Test *** Project",
+        "This is a test project.",
+        "/api/v1/projects",
+    );
+    assert_eq!(
+        test_project2,
+        Err(String::from("Error: name contains an invalid character"))
+    );
+
+    let test_project2 = Project::create(
+        &mut all_projects,
+        "test",
+        "Test Project",
+        "This is a test project.",
+        "/api/v1/projects-",
+    );
+    assert_eq!(
+        test_project2,
+        Err(String::from(
+            "Error: api_path contains an invalid character"
+        ))
+    );
+
+    let test_project2 = Project::create(
+        &mut all_projects,
+        "test",
+        "Test Project",
+        "This is a test project.",
+        "/api/v1/Projects",
+    );
+    assert_eq!(
+        test_project2,
+        Err(String::from(
+            "Error: api_path should not contain uppercase alphabetical character(s)"
+        ))
+    );
+
+    let test_project2 = Project::create(
+        &mut all_projects,
+        "test",
+        "Test Project",
+        "This is a test project.",
+        "/api/v1/projects",
+    );
+    assert_eq!(test_project2, Err(String::from("Error: id already taken")));
+
+    let test_project2 = Project::create(
+        &mut all_projects,
+        "test2",
+        "Test Project",
+        "This is a test project.",
+        "/api/v1/projects",
+    );
+    assert_eq!(
+        test_project2,
+        Err(String::from("Error: api_path already taken"))
+    );
+
+    let test_project2 = Project::create(
+        &mut all_projects,
+        "test2",
+        "Test Project",
+        "This is a test project;",
+        "/api/v1/projects2",
+    );
+    assert_eq!(
+        test_project2,
+        Err(String::from(
+            "Error: description contains an invalid character"
+        ))
+    );
+
+    let test_project2 = Project::create(
+        &mut all_projects,
+        "test2",
+        "Test Project",
+        "This is a new test project.",
+        "/api/v1/projects2",
+    );
+    assert_eq!(test_project2, Ok(()));
+
+    save_all_projects(&all_projects, file_name);
 }

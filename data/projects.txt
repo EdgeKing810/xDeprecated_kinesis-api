@@ -1,0 +1,1 @@
+konnect;Konnect - Social Media;A next-gen social media.;/api/v2/konnect

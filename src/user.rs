@@ -93,12 +93,32 @@ impl User {
             ));
         }
 
+        if String::from(first_name.trim()).len() < 1 {
+            return Err(String::from(
+                "Error: first_name does not contain enough characters",
+            ));
+        } else if String::from(first_name.trim()).len() > 100 {
+            return Err(String::from(
+                "Error: first_name contains too many characters",
+            ));
+        }
+
         if !String::from(last_name)
             .chars()
             .all(|c| c.is_alphabetic() || c == ' ' || c == '-')
         {
             return Err(String::from(
                 "Error: last_name contains an invalid character",
+            ));
+        }
+
+        if String::from(last_name.trim()).len() < 1 {
+            return Err(String::from(
+                "Error: last_name does not contain enough characters",
+            ));
+        } else if String::from(last_name.trim()).len() > 100 {
+            return Err(String::from(
+                "Error: last_name contains too many characters",
             ));
         }
 
@@ -121,6 +141,14 @@ impl User {
             ));
         }
 
+        if String::from(username.trim()).len() < 1 {
+            return Err(String::from(
+                "Error: username does not contain enough characters",
+            ));
+        } else if String::from(username.trim()).len() > 50 {
+            return Err(String::from("Error: username contains too many characters"));
+        }
+
         let email_regex = Regex::new(
             r"^([a-z0-9_+]([a-z0-9_+.]*[a-z0-9_+])?)@([a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,6})",
         )
@@ -129,11 +157,23 @@ impl User {
             return Err(String::from("Error: Invalid email address"));
         }
 
-        if password.trim().len() < 8 {
+        if String::from(email.trim()).len() < 1 {
+            return Err(String::from(
+                "Error: email does not contain enough characters",
+            ));
+        } else if String::from(email.trim()).len() > 100 {
+            return Err(String::from("Error: email contains too many characters"));
+        }
+
+        if String::from(password.trim()).len() < 7 {
             return Err(String::from(
                 "Error: password should be longer than 7 characters",
             ));
-        } else if !String::from(password)
+        } else if String::from(password.trim()).len() > 100 {
+            return Err(String::from("Error: password contains too many characters"));
+        }
+
+        if !String::from(password)
             .trim()
             .chars()
             .any(|c| c.is_alphabetic() && c.is_uppercase())
