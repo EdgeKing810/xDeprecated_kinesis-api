@@ -101,32 +101,40 @@ impl User {
             latest_error = e;
         }
 
-        let username_update = Self::update_username(all_users, &uid, username);
-        if let Err(e) = username_update {
-            has_error = true;
-            println!("Error: {}", e);
-            latest_error = e;
+        if !has_error {
+            let username_update = Self::update_username(all_users, &uid, username);
+            if let Err(e) = username_update {
+                has_error = true;
+                println!("Error: {}", e);
+                latest_error = e;
+            }
         }
 
-        let email_update = Self::update_email(all_users, &uid, email);
-        if let Err(e) = email_update {
-            has_error = true;
-            println!("Error: {}", e);
-            latest_error = e;
+        if !has_error {
+            let email_update = Self::update_email(all_users, &uid, email);
+            if let Err(e) = email_update {
+                has_error = true;
+                println!("Error: {}", e);
+                latest_error = e;
+            }
         }
 
-        let password_update = Self::update_password(all_users, &uid, password);
-        if let Err(e) = password_update {
-            has_error = true;
-            println!("Error: {}", e);
-            latest_error = e;
+        if !has_error {
+            let password_update = Self::update_password(all_users, &uid, password);
+            if let Err(e) = password_update {
+                has_error = true;
+                println!("Error: {}", e);
+                latest_error = e;
+            }
         }
 
-        let role_update = Self::update_role(all_users, &uid, role_numeric);
-        if let Err(e) = role_update {
-            has_error = true;
-            println!("Error: {}", e);
-            latest_error = e;
+        if !has_error {
+            let role_update = Self::update_role(all_users, &uid, role_numeric);
+            if let Err(e) = role_update {
+                has_error = true;
+                println!("Error: {}", e);
+                latest_error = e;
+            }
         }
 
         if has_error {

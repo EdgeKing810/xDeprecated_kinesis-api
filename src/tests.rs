@@ -296,7 +296,7 @@ fn test_projects() {
 
     let test_project2 = Project::create(
         &mut all_projects,
-        "test",
+        "test2",
         "Test *** Project",
         "This is a test project.",
         "/api/v1/projects",
@@ -308,7 +308,7 @@ fn test_projects() {
 
     let test_project2 = Project::create(
         &mut all_projects,
-        "test",
+        "test2",
         "Test Project",
         "This is a test project.",
         "/api/v1/projects-",
@@ -322,7 +322,7 @@ fn test_projects() {
 
     let test_project2 = Project::create(
         &mut all_projects,
-        "test",
+        "test2",
         "Test Project",
         "This is a test project.",
         "/api/v1/Projects",
@@ -341,7 +341,10 @@ fn test_projects() {
         "This is a test project.",
         "/api/v1/projects",
     );
-    assert_eq!(test_project2, Err(String::from("Error: id already taken")));
+    assert_eq!(
+        test_project2,
+        Err(String::from("Error: id is already in use"))
+    );
 
     let test_project2 = Project::create(
         &mut all_projects,
@@ -352,7 +355,7 @@ fn test_projects() {
     );
     assert_eq!(
         test_project2,
-        Err(String::from("Error: api_path already taken"))
+        Err(String::from("Error: api_path is already in use"))
     );
 
     let test_project2 = Project::create(
@@ -377,6 +380,24 @@ fn test_projects() {
         "/api/v1/projects2",
     );
     assert_eq!(test_project2, Ok(()));
+
+    let test2_id = String::from("test2");
+
+    let test_project3 = Project::update_name(&mut all_projects, &test2_id, "Test Project 3");
+    assert_eq!(test_project3, Ok(()));
+
+    let test_project3 = Project::update_description(
+        &mut all_projects,
+        &test2_id,
+        "This is a new test project (3).",
+    );
+    assert_eq!(test_project3, Ok(()));
+
+    let test_project3 = Project::update_api_path(&mut all_projects, &test2_id, "/api/v1/projects3");
+    assert_eq!(test_project3, Ok(()));
+
+    let test_project3 = Project::update_id(&mut all_projects, &test2_id, "test3");
+    assert_eq!(test_project3, Ok(()));
 
     save_all_projects(&all_projects, file_name);
 }
