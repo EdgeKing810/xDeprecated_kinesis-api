@@ -243,6 +243,25 @@ fn test_users() {
     );
     assert_eq!(test_user2, Ok(()));
 
+    let login_test_user2 = User::login(&mut all_users, "te_st", "Test123*&^()[]{}*-_");
+
+    if let Ok(successful_login) = login_test_user2 {
+        let test_user2 = User::update_name(&mut all_users, &successful_login.id, "Test", "Tester");
+        assert_eq!(test_user2, Ok(()));
+
+        let test_user2 = User::update_username(&mut all_users, &successful_login.id, "test2");
+        assert_eq!(test_user2, Ok(()));
+
+        let test_user2 = User::update_email(&mut all_users, &successful_login.id, "test2@test.com");
+        assert_eq!(test_user2, Ok(()));
+
+        let test_user2 = User::update_password(&mut all_users, &successful_login.id, "Test123*");
+        assert_eq!(test_user2, Ok(()));
+
+        let test_user2 = User::update_role(&mut all_users, &successful_login.id, 2);
+        assert_eq!(test_user2, Ok(()));
+    };
+
     save_all_users(&all_users, file_name);
 }
 

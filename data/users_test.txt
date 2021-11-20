@@ -1,2 +1,2 @@
-aa09e4ac-8668-4914-8612-87bc660c759c;Test;Tester;test;test@test.com;$2b$10$2f0CPRRJwy.jYx5kuQCqI.4tsfa25lZlizeoVJzyCdKSSmc577/lG;0
-cbf20d38-4f48-4fe5-9d23-b69cb20858f3;Test;Tester;te_st;test@test2.com;$2b$10$3zXLIYpjNWgXwxK5WwUo1eLSTTW7LE1mjWPCJghMgq0eM2TKvy9aS;0
+0c7078bb-3262-4845-be98-5286c0ddc4b9;Test;Tester;test;test@test.com;$2b$10$aljo1oHlsQPcr/bB5SlHs./1yUGj/NvOeHWeuwVYvhJmIzb7J6xMG;0
+aa7346e9-1618-475c-bd8e-cc3488a05118;Test;Tester;test2;test2@test.com;$2b$10$yENS4wdh2owhioL3wOp0w.CcBeSNba56HiFZ82BeT30D/B9da5cZK;2
