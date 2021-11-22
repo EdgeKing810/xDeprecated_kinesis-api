@@ -1,2 +1,3 @@
 users=data/users.txt
 projects=data/projects.txt
+configs=data/configs.txt
