@@ -48,6 +48,42 @@ impl User {
         }
     }
 
+    pub fn exist(all_users: &Vec<User>, id: &str) -> bool {
+        let mut found = false;
+        for user in all_users.iter() {
+            if user.id == id {
+                found = true;
+                break;
+            }
+        }
+
+        found
+    }
+
+    pub fn exist_username(all_users: &Vec<User>, username: &str) -> bool {
+        let mut found = false;
+        for user in all_users.iter() {
+            if user.username.to_lowercase() == username.to_lowercase() {
+                found = true;
+                break;
+            }
+        }
+
+        found
+    }
+
+    pub fn exist_email(all_users: &Vec<User>, email: &str) -> bool {
+        let mut found = false;
+        for user in all_users.iter() {
+            if user.email.to_lowercase() == email.to_lowercase() {
+                found = true;
+                break;
+            }
+        }
+
+        found
+    }
+
     pub fn register(
         all_users: &mut Vec<User>,
         first_name: &str,
@@ -149,7 +185,7 @@ impl User {
         Ok(())
     }
 
-    pub fn login(all_users: &mut Vec<User>, auth: &str, password: &str) -> Result<User, String> {
+    pub fn login(all_users: &Vec<User>, auth: &str, password: &str) -> Result<User, String> {
         let mut found_user: Option<User> = None;
 
         for user in all_users.iter() {
@@ -433,8 +469,8 @@ impl User {
     }
 }
 
-pub fn fetch_all_users(path: String) -> Vec<User> {
-    let all_users_raw = fetch_file(path.clone());
+pub fn fetch_all_users(path: String, encryption_key: &String) -> Vec<User> {
+    let all_users_raw = fetch_file(path.clone(), encryption_key);
 
     let individual_users = all_users_raw
         .split("\n")
@@ -477,7 +513,7 @@ pub fn fetch_all_users(path: String) -> Vec<User> {
     final_users
 }
 
-pub fn save_all_users(users: &Vec<User>, path: &str) {
+pub fn save_all_users(users: &Vec<User>, path: String, encryption_key: &String) {
     let mut stringified_users = String::new();
 
     for user in users {
@@ -505,6 +541,6 @@ pub fn save_all_users(users: &Vec<User>, path: &str) {
         );
     }
 
-    save_file(String::from(path), stringified_users);
+    save_file(path, stringified_users, encryption_key);
     println!("Users saved!");
 }

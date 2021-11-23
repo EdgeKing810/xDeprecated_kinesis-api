@@ -1,1 +1,2 @@
-konnect;Konnect - Social Media;A next-gen social media.;/api/v2/konnect
+;|encrypted|;
+7KkjMfDsyRsf3fWIsbKls2vser4gr82vMbtixTTbetKEVdtBO0EOvZXrugpgPYhy2eMqkhX4dlDgEvLI+9vsZ9TRYvNSOZaQKJK0x/tJn68=

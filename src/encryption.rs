@@ -53,13 +53,13 @@ impl EncryptionKey {
 }
 
 pub fn fetch_encryption_key(path: String, password: &str) -> Result<String, String> {
-    let encryption_key_raw = fetch_file(path.clone());
+    let encryption_key_raw = fetch_file(path.clone(), &String::from(password));
 
-    let decrypted_encryption_key = EncryptionKey::decrypt(encryption_key_raw, password);
-    match decrypted_encryption_key {
-        Ok(ec) => return Ok(ec.0.to_string()),
-        Err(e) => return Err(e),
+    if encryption_key_raw.split("\n").collect::<Vec<&str>>()[0] == ";|encrypted|;" {
+        return Err(String::from("Error: Decryption failed"));
     }
+
+    Ok(encryption_key_raw)
 }
 
 pub fn save_encryption_key(
@@ -67,9 +67,7 @@ pub fn save_encryption_key(
     password: &str,
     path: &str,
 ) -> Result<(), String> {
-    let encrypted_encryption_key = EncryptionKey::encrypt(encryption_key, password);
-
-    save_file(String::from(path), encrypted_encryption_key);
+    save_file(String::from(path), encryption_key, &String::from(password));
     println!("Encryption Key Saved!");
 
     Ok(())

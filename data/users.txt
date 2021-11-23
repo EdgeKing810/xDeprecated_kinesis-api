@@ -1,1 +1,2 @@
-cfcd2517-b86d-4c4d-a70e-ab4170e91ed6;Kishan;Takoordyal;EdgeKing810;kishan@konnect.dev;$2b$10$OUyuZAVNU9VBc.pHn0XlWOB4xOaUSWDAyoc3C0wBvXjVwtflAqu6O;0
+;|encrypted|;
+B3av/PNo59b3lAz1U3jptFkoO/Puq2HIwA4rfe0FOsWDa4mbAxQaJjLOyBpc4dnIYGYbm66cnwupIphfSFpYBQNNhkiQ+5VhGAfuO5mt0B6ngVJbSP6+WtzQt+9k+buV5sg2SFWavyfH9e1nkSU2blDTNiGe7cCcJ8yqxe+960eY0wKMj3+HIcaXrg0rp8nD5YO4cIADJtyDz+K/SecG3Q==

@@ -13,7 +13,7 @@ fn test_mappings() {
     let file_name: &str = "data/mappings_test.txt";
     remove_file(file_name.to_string());
 
-    let mut all_mappings = fetch_all_mappings(file_name);
+    let mut all_mappings = fetch_all_mappings(file_name, &String::new());
     println!("{:#?}", all_mappings);
 
     let user_mapping = Mapping::create(&mut all_mappings, "users_test", "users.txt");
@@ -47,7 +47,7 @@ fn test_mappings() {
     let remove_weird3 = Mapping::remove(&mut all_mappings, "weird3");
     assert_eq!(remove_weird3, Ok(()));
 
-    save_all_mappings(&all_mappings, file_name);
+    save_all_mappings(&all_mappings, file_name, &String::new());
 }
 
 #[test]
@@ -55,7 +55,7 @@ fn test_users() {
     let file_name: &str = "data/users_test.txt";
     remove_file(file_name.to_string());
 
-    let mut all_users = fetch_all_users(file_name.to_string());
+    let mut all_users = fetch_all_users(file_name.to_string(), &String::new());
     println!("{:#?}", all_users);
 
     let test_user = User::create(
@@ -245,7 +245,7 @@ fn test_users() {
     );
     assert_eq!(test_user2, Ok(()));
 
-    let login_test_user2 = User::login(&mut all_users, "te_st", "Test123*&^()[]{}*-_");
+    let login_test_user2 = User::login(&all_users, "te_st", "Test123*&^()[]{}*-_");
 
     if let Ok(successful_login) = login_test_user2 {
         let test_user2 = User::update_name(&mut all_users, &successful_login.id, "Test", "Tester");
@@ -264,7 +264,7 @@ fn test_users() {
         assert_eq!(test_user2, Ok(()));
     };
 
-    save_all_users(&all_users, file_name);
+    save_all_users(&all_users, String::from(file_name), &String::new());
 }
 
 #[test]
@@ -272,7 +272,7 @@ fn test_projects() {
     let file_name: &str = "data/projects_test.txt";
     remove_file(file_name.to_string());
 
-    let mut all_projects = fetch_all_projects(file_name.to_string());
+    let mut all_projects = fetch_all_projects(file_name.to_string(), &String::new());
     println!("{:#?}", all_projects);
 
     let test_project = Project::create(
@@ -401,7 +401,7 @@ fn test_projects() {
     let test_project3 = Project::update_id(&mut all_projects, &test2_id, "test3");
     assert_eq!(test_project3, Ok(()));
 
-    save_all_projects(&all_projects, file_name);
+    save_all_projects(&all_projects, String::from(file_name), &String::new());
 }
 
 #[test]
@@ -409,7 +409,7 @@ fn test_configs() {
     let file_name: &str = "data/configs_test.txt";
     remove_file(file_name.to_string());
 
-    let mut all_configs = fetch_all_configs(file_name.to_string());
+    let mut all_configs = fetch_all_configs(file_name.to_string(), &String::new());
     println!("{:#?}", all_configs);
 
     let test_config = Config::create(&mut all_configs, "TEST", "test");
@@ -443,7 +443,7 @@ fn test_configs() {
     let test_config2 = Config::update_value(&mut all_configs, test2_id, "TEST2VAL");
     assert_eq!(test_config2, Ok(()));
 
-    save_all_configs(&all_configs, file_name);
+    save_all_configs(&all_configs, String::from(file_name), &String::new());
 }
 
 #[test]

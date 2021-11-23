@@ -16,6 +16,18 @@ impl Mapping {
         }
     }
 
+    pub fn exist(all_mappings: &Vec<Mapping>, id: &str) -> bool {
+        let mut found = false;
+        for mapping in all_mappings.iter() {
+            if mapping.id == id {
+                found = true;
+                break;
+            }
+        }
+
+        found
+    }
+
     pub fn create(
         all_mappings: &mut Vec<Mapping>,
         id: &str,
@@ -135,8 +147,8 @@ impl Mapping {
     }
 }
 
-pub fn fetch_all_mappings(path: &str) -> Vec<Mapping> {
-    let all_mappings_raw = fetch_file(String::from(path));
+pub fn fetch_all_mappings(path: &str, encryption_key: &String) -> Vec<Mapping> {
+    let all_mappings_raw = fetch_file(String::from(path), encryption_key);
 
     let individual_mappings = all_mappings_raw
         .split("\n")
@@ -153,7 +165,7 @@ pub fn fetch_all_mappings(path: &str) -> Vec<Mapping> {
     final_mappings
 }
 
-pub fn save_all_mappings(mappings: &Vec<Mapping>, path: &str) {
+pub fn save_all_mappings(mappings: &Vec<Mapping>, path: &str, encryption_key: &String) {
     let mut stringified_mappings = String::new();
     for mapping in mappings {
         stringified_mappings = format!(
@@ -169,7 +181,7 @@ pub fn save_all_mappings(mappings: &Vec<Mapping>, path: &str) {
         );
     }
 
-    save_file(String::from(path), stringified_mappings);
+    save_file(String::from(path), stringified_mappings, encryption_key);
     println!("Mappings saved!");
 }
 

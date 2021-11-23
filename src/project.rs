@@ -18,6 +18,18 @@ impl Project {
         }
     }
 
+    pub fn exist(all_projects: &Vec<Project>, id: &str) -> bool {
+        let mut found = false;
+        for project in all_projects.iter() {
+            if project.id == id {
+                found = true;
+                break;
+            }
+        }
+
+        found
+    }
+
     pub fn create(
         all_projects: &mut Vec<Project>,
         id: &str,
@@ -280,8 +292,8 @@ impl Project {
     }
 }
 
-pub fn fetch_all_projects(path: String) -> Vec<Project> {
-    let all_projects_raw = fetch_file(path.clone());
+pub fn fetch_all_projects(path: String, encryption_key: &String) -> Vec<Project> {
+    let all_projects_raw = fetch_file(path.clone(), encryption_key);
 
     let individual_projects = all_projects_raw
         .split("\n")
@@ -304,7 +316,7 @@ pub fn fetch_all_projects(path: String) -> Vec<Project> {
     final_projects
 }
 
-pub fn save_all_projects(projects: &Vec<Project>, path: &str) {
+pub fn save_all_projects(projects: &Vec<Project>, path: String, encryption_key: &String) {
     let mut stringified_projects = String::new();
 
     for project in projects {
@@ -323,6 +335,6 @@ pub fn save_all_projects(projects: &Vec<Project>, path: &str) {
         );
     }
 
-    save_file(String::from(path), stringified_projects);
+    save_file(path, stringified_projects, encryption_key);
     println!("Projects saved!");
 }

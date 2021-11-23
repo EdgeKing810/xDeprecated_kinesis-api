@@ -14,6 +14,18 @@ impl Config {
         }
     }
 
+    pub fn exist(all_configs: &Vec<Config>, name: &str) -> bool {
+        let mut found = false;
+        for config in all_configs.iter() {
+            if config.name.to_lowercase() == name.to_lowercase() {
+                found = true;
+                break;
+            }
+        }
+
+        found
+    }
+
     pub fn create(all_configs: &mut Vec<Config>, name: &str, value: &str) -> Result<(), String> {
         if !String::from(name)
             .chars()
@@ -120,8 +132,8 @@ impl Config {
     }
 }
 
-pub fn fetch_all_configs(path: String) -> Vec<Config> {
-    let all_configs_raw = fetch_file(path.clone());
+pub fn fetch_all_configs(path: String, encryption_key: &String) -> Vec<Config> {
+    let all_configs_raw = fetch_file(path.clone(), encryption_key);
 
     let individual_configs = all_configs_raw
         .split("\n")
@@ -139,7 +151,7 @@ pub fn fetch_all_configs(path: String) -> Vec<Config> {
     final_configs
 }
 
-pub fn save_all_configs(configs: &Vec<Config>, path: &str) {
+pub fn save_all_configs(configs: &Vec<Config>, path: String, encryption_key: &String) {
     let mut stringified_configs = String::new();
 
     for config in configs {
@@ -156,6 +168,6 @@ pub fn save_all_configs(configs: &Vec<Config>, path: &str) {
         );
     }
 
-    save_file(String::from(path), stringified_configs);
+    save_file(path, stringified_configs, encryption_key);
     println!("Configs saved!");
 }
