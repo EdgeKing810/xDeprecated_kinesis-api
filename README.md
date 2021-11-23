@@ -3,12 +3,12 @@
 This is a custom database being developped that will be a crucial component in an upcoming, even
 bigger project.
 
-# Getting Started
+### Getting Started
 
 After cloning the project, you should be getting no errors when running a `cargo run` from the
 directory of the cloned project. Furthermore, all tests should be OK when running a `cargo test`.
 
-# Contributing
+### Contributing
 
 - Some improvements can be made here and there to enforce borrowing wherever it can be made to
   save up on the memory footprint of the app and to get some (not sure if noticeable) performance boost.
