@@ -9,3 +9,5 @@ edition = "2018"
 uuid = { version = "0.8.2", features = ["v4"] }
 pwhash = "1.0.0"
 regex = "1"
+rand = "0.8.4"
+magic-crypt = "3.1.9"

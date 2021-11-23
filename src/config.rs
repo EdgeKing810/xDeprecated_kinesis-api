@@ -65,9 +65,7 @@ impl Config {
         let mut found_config: Option<Config> = None;
 
         if String::from(value).chars().any(|c| c == '|') {
-            return Err(String::from(
-                "Error: value contains an invalid character",
-            ));
+            return Err(String::from("Error: value contains an invalid character"));
         }
 
         if String::from(value.trim()).len() < 1 {

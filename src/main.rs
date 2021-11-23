@@ -1,12 +1,16 @@
 #![allow(dead_code)]
+#[macro_use]
+extern crate magic_crypt;
 
 use config::{fetch_all_configs, save_all_configs, Config};
+use encryption::{fetch_encryption_key, save_encryption_key, EncryptionKey};
 use io::remove_file;
 use mappings::{fetch_all_mappings, get_file_name, save_all_mappings, Mapping};
 use project::{fetch_all_projects, save_all_projects, Project};
 use user::{fetch_all_users, User};
 
 mod config;
+mod encryption;
 mod io;
 mod mappings;
 mod project;
@@ -24,6 +28,13 @@ fn initialize() {
     let mut all_users: Vec<User> = initialize_users(&all_mappings);
     let mut all_projects: Vec<Project> = initialize_projects(&all_mappings);
     let _all_configs: Vec<Config> = initialize_configs(&all_mappings);
+
+    let tmp_password = "Test123*";
+    let init_encryption = initialize_encryption_key(&all_mappings, tmp_password);
+    match init_encryption {
+        Err(e) => println!("Error: {}", e),
+        Ok(key) => println!("Encryption Key: {}", key),
+    }
 
     println!(
         "{:#?}",
@@ -61,6 +72,15 @@ fn initialize_mappings() -> Vec<Mapping> {
 
     let config_mapping = Mapping::create(&mut fetched_mappings, "configs", "data/configs.txt");
     if let Err(e) = config_mapping {
+        println!("{}", e);
+    }
+
+    let encryption_key_mapping = Mapping::create(
+        &mut fetched_mappings,
+        "encryption_key",
+        "data/encryption_key.txt",
+    );
+    if let Err(e) = encryption_key_mapping {
         println!("{}", e);
     }
 
@@ -148,6 +168,36 @@ fn initialize_configs(mappings: &Vec<Mapping>) -> Vec<Config> {
     save_all_configs(&all_configs, &*final_path);
 
     all_configs
+}
+
+fn initialize_encryption_key(mappings: &Vec<Mapping>, password: &str) -> Result<String, String> {
+    let encryption_key_path = get_file_name("encryption_key", mappings);
+    let mut encryption_key_final_path: String = String::new();
+    let mut encryption_key: Result<String, String> =
+        Err(String::from("Error: Encryption Key not found"));
+
+    if let Ok(path) = encryption_key_path {
+        encryption_key = fetch_encryption_key(path.clone(), password);
+        encryption_key_final_path = path;
+    }
+
+    if let Err(_) = encryption_key {
+        // Encryption key most likely doesn't exist yet
+        let new_encryption_key = EncryptionKey::generate(20);
+        let saved_encryption_key = save_encryption_key(
+            new_encryption_key.0.clone(),
+            password,
+            &*encryption_key_final_path,
+        );
+
+        if let Err(f) = saved_encryption_key {
+            return Err(String::from(f));
+        }
+
+        return Ok(new_encryption_key.0);
+    }
+
+    Ok(encryption_key.unwrap())
 }
 
 fn reset_db(all_mappings: Vec<Mapping>) {

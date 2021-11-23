@@ -1,10 +1,11 @@
 #[cfg(test)]
 use crate::{
+    config::{fetch_all_configs, save_all_configs, Config},
+    encryption::{fetch_encryption_key, save_encryption_key, EncryptionKey},
     io::remove_file,
     mappings::{fetch_all_mappings, save_all_mappings, Mapping},
     project::{fetch_all_projects, save_all_projects, Project},
     user::{fetch_all_users, save_all_users, User},
-    config::{fetch_all_configs, save_all_configs, Config},
 };
 
 #[test]
@@ -411,52 +412,31 @@ fn test_configs() {
     let mut all_configs = fetch_all_configs(file_name.to_string());
     println!("{:#?}", all_configs);
 
-    let test_config = Config::create(
-        &mut all_configs,
-        "TEST",
-        "test"
-    );
+    let test_config = Config::create(&mut all_configs, "TEST", "test");
     assert_eq!(test_config, Ok(()));
 
-    let test_config2 = Config::create(
-        &mut all_configs,
-        "test?",
-        "Test2"
-    );
+    let test_config2 = Config::create(&mut all_configs, "test?", "Test2");
     assert_eq!(
         test_config2,
         Err(String::from("Error: name contains an invalid character"))
     );
 
-    let test_config2 = Config::create(
-        &mut all_configs,
-        "test",
-        "Test2"
-    );
+    let test_config2 = Config::create(&mut all_configs, "test", "Test2");
     assert_eq!(
         test_config2,
-        Err(String::from("Error: A config with that name already exists (TEST)"))
+        Err(String::from(
+            "Error: A config with that name already exists (TEST)"
+        ))
     );
 
-    let test_config2 = Config::create(
-        &mut all_configs,
-        "test2",
-        "Test2|"
-    );
+    let test_config2 = Config::create(&mut all_configs, "test2", "Test2|");
     assert_eq!(
         test_config2,
         Err(String::from("Error: value contains an invalid character"))
     );
 
-    let test_config2 = Config::create(
-        &mut all_configs,
-        "test2",
-        "Test2"
-    );
-    assert_eq!(
-        test_config2,
-        Ok(())
-    );
+    let test_config2 = Config::create(&mut all_configs, "test2", "Test2");
+    assert_eq!(test_config2, Ok(()));
 
     let test2_id = "test2";
 
@@ -464,4 +444,32 @@ fn test_configs() {
     assert_eq!(test_config2, Ok(()));
 
     save_all_configs(&all_configs, file_name);
+}
+
+#[test]
+fn test_encryption() {
+    let file_name: &str = "data/encryption_key_test.txt";
+    remove_file(file_name.to_string());
+
+    let password: &str = "Test123*";
+    let length: usize = 30;
+
+    let encryption_key = fetch_encryption_key(file_name.to_string(), password);
+    println!("{:#?}", encryption_key);
+
+    let generated_encryption_key = EncryptionKey::generate(length);
+    let encrypted_generated_encryption_key =
+        EncryptionKey::encrypt(generated_encryption_key.0.clone(), password);
+    let decrypted_generated_encryption_key =
+        EncryptionKey::decrypt(encrypted_generated_encryption_key, password);
+
+    assert_eq!(
+        decrypted_generated_encryption_key.unwrap().0,
+        generated_encryption_key.0
+    );
+
+    let saved_encryption_key = save_encryption_key(generated_encryption_key.0, password, file_name);
+    if let Err(e) = saved_encryption_key {
+        println!("Error: {}", e);
+    }
 }
