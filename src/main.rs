@@ -9,11 +9,14 @@ use mappings::{fetch_all_mappings, get_file_name, save_all_mappings, Mapping};
 use project::{fetch_all_projects, save_all_projects, Project};
 use user::{fetch_all_users, save_all_users, User};
 
+mod collection;
 mod config;
+mod custom_structures;
 mod encryption;
 mod io;
 mod mappings;
 mod project;
+mod structures;
 mod tests;
 mod user;
 

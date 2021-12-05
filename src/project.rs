@@ -115,7 +115,7 @@ impl Project {
             .chars()
             .all(|c| c.is_ascii_alphanumeric() || c == '_' || c == '-')
         {
-            return Err(String::from("Error: id contains an invalid character"));
+            return Err(String::from("Error: new_id contains an invalid character"));
         }
 
         if String::from(new_id.trim()).len() < 1 {
