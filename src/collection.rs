@@ -14,7 +14,7 @@ pub struct Collection {
 }
 
 impl Collection {
-    fn create(
+    pub fn create(
         collections: &mut Vec<Collection>,
         id: &str,
         project_id: &str,
@@ -196,7 +196,7 @@ impl Collection {
 
         if !String::from(name)
             .chars()
-            .all(|c| c.is_ascii_alphanumeric() || c == '_')
+            .all(|c| c.is_ascii_alphanumeric() || c == '_' || c == ' ')
         {
             return Err(String::from("Error: name contains an invalid character"));
         }
@@ -291,6 +291,44 @@ impl Collection {
         Ok(())
     }
 
+    pub fn update_structure(
+        all_collections: &mut Vec<Collection>,
+        id: &String,
+        structure: Structure,
+    ) -> Result<(), String> {
+        let mut found_collection: Option<Collection> = None;
+
+        for collection in all_collections.iter_mut() {
+            if collection.id == *id {
+                found_collection = Some(collection.clone());
+                let mut found_structure = false;
+
+                let mut current_structures = collection.structures.clone();
+
+                for current_structure in current_structures.iter_mut() {
+                    if current_structure.id == structure.id {
+                        *current_structure = structure.clone();
+                        found_structure = true;
+                    }
+                }
+
+                if !found_structure {
+                    current_structures.push(structure);
+                }
+
+                collection.structures = current_structures;
+
+                break;
+            }
+        }
+
+        if let None = found_collection {
+            return Err(String::from("Error: Collection not found"));
+        }
+
+        Ok(())
+    }
+
     pub fn add_custom_structure(
         all_collections: &mut Vec<Collection>,
         id: &String,
@@ -304,6 +342,44 @@ impl Collection {
 
                 let mut current_custom_structures = collection.custom_structures.clone();
                 current_custom_structures.push(custom_structure);
+                collection.custom_structures = current_custom_structures;
+
+                break;
+            }
+        }
+
+        if let None = found_collection {
+            return Err(String::from("Error: Collection not found"));
+        }
+
+        Ok(())
+    }
+
+    pub fn update_custom_structure(
+        all_collections: &mut Vec<Collection>,
+        id: &String,
+        custom_structure: CustomStructure,
+    ) -> Result<(), String> {
+        let mut found_collection: Option<Collection> = None;
+
+        for collection in all_collections.iter_mut() {
+            if collection.id == *id {
+                found_collection = Some(collection.clone());
+                let mut found_structure = false;
+
+                let mut current_custom_structures = collection.custom_structures.clone();
+
+                for current_custom_structure in current_custom_structures.iter_mut() {
+                    if current_custom_structure.id == custom_structure.id {
+                        *current_custom_structure = custom_structure.clone();
+                        found_structure = true;
+                    }
+                }
+
+                if !found_structure {
+                    current_custom_structures.push(custom_structure);
+                }
+
                 collection.custom_structures = current_custom_structures;
 
                 break;
@@ -474,7 +550,7 @@ pub fn fetch_all_collections(path: String, encryption_key: &String) -> Vec<Colle
             current_collection[0],
             current_collection[1],
             current_collection[2],
-            current_collection[3],
+            current_collection[3].split("^").collect::<Vec<&str>>()[0],
         );
         if let Err(e) = create_collection {
             println!("{}", e);
@@ -485,6 +561,10 @@ pub fn fetch_all_collections(path: String, encryption_key: &String) -> Vec<Colle
         let mut final_structures: Vec<Structure> = vec![];
         for structure in individual_structures {
             let current_structure = structure.split("|").collect::<Vec<&str>>();
+
+            if current_structure.len() <= 1 {
+                break;
+            }
 
             let min = current_structure[4].parse::<usize>();
             if let Err(e) = min {
@@ -538,6 +618,10 @@ pub fn fetch_all_collections(path: String, encryption_key: &String) -> Vec<Colle
         for custom_structure in individual_custom_structures {
             let current_custom_structure = custom_structure.split("|").collect::<Vec<&str>>();
 
+            if current_custom_structure.len() <= 1 {
+                break;
+            }
+
             let create_custom_structure = CustomStructure::create(
                 &mut final_custom_structures,
                 current_custom_structure[0],
@@ -552,6 +636,10 @@ pub fn fetch_all_collections(path: String, encryption_key: &String) -> Vec<Colle
             let mut final_structures_custom: Vec<Structure> = vec![];
             for structure in individual_structures {
                 let current_structure = structure.split("|").collect::<Vec<&str>>();
+
+                if current_structure.len() <= 1 {
+                    break;
+                }
 
                 let min = current_structure[4].parse::<usize>();
                 if let Err(e) = min {

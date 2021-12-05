@@ -2,11 +2,14 @@
 #[macro_use]
 extern crate magic_crypt;
 
+use collection::{fetch_all_collections, save_all_collections, Collection};
 use config::{fetch_all_configs, save_all_configs, Config};
+use custom_structures::CustomStructure;
 use encryption::{fetch_encryption_key, save_encryption_key, EncryptionKey};
 use io::remove_file;
 use mappings::{fetch_all_mappings, get_file_name, save_all_mappings, Mapping};
 use project::{fetch_all_projects, save_all_projects, Project};
+use structures::Structure;
 use user::{fetch_all_users, save_all_users, User};
 
 mod collection;
@@ -32,10 +35,13 @@ fn initialize() {
     let all_users: Vec<User> = initialize_users(&all_mappings);
     let all_projects: Vec<Project> = initialize_projects(&all_mappings);
     let _all_configs: Vec<Config> = initialize_configs(&all_mappings);
+    let all_collections: Vec<Collection> = initialize_collections(&all_mappings);
 
     println!("{:#?}", User::login(&all_users, "EdgeKing810", "Test123*"));
 
     println!("Projects: {:#?}", all_projects);
+
+    println!("Collections: {:#?}", all_collections);
 }
 
 fn initialize_mappings() -> Vec<Mapping> {
@@ -59,6 +65,14 @@ fn initialize_mappings() -> Vec<Mapping> {
     if !Mapping::exist(&fetched_mappings, "configs") {
         let config_mapping = Mapping::create(&mut fetched_mappings, "configs", "data/configs.txt");
         if let Err(e) = config_mapping {
+            println!("{}", e);
+        }
+    }
+
+    if !Mapping::exist(&fetched_mappings, "collections") {
+        let collection_mapping =
+            Mapping::create(&mut fetched_mappings, "collections", "data/collections.txt");
+        if let Err(e) = collection_mapping {
             println!("{}", e);
         }
     }
@@ -236,6 +250,172 @@ fn initialize_encryption_key(mappings: &Vec<Mapping>, password: &str) -> Result<
     }
 
     Ok(encryption_key.unwrap())
+}
+
+fn initialize_collections(mappings: &Vec<Mapping>) -> Vec<Collection> {
+    let all_collections_path = get_file_name("collections", mappings);
+    let mut all_collections = Vec::<Collection>::new();
+
+    if let Err(e) = all_collections_path {
+        println!("{}", e);
+        return all_collections;
+    }
+
+    all_collections = fetch_all_collections(all_collections_path.clone().unwrap(), &String::new());
+
+    if !Collection::exist(&all_collections, "posts") {
+        let create_collection = Collection::create(
+            &mut all_collections,
+            "posts",
+            "konnect",
+            "Posts",
+            "To store blog posts.",
+        );
+        if let Err(e) = create_collection {
+            println!("{}", e);
+        }
+
+        let mut all_structures = Vec::<Structure>::new();
+        Structure::create(
+            &mut all_structures,
+            "title",
+            "Title",
+            "text",
+            "test title",
+            5,
+            20,
+            false,
+            false,
+            "",
+            false,
+        )
+        .unwrap();
+        Structure::create(
+            &mut all_structures,
+            "cover_image",
+            "Cover Image",
+            "media",
+            "https://test.image.com",
+            0,
+            200,
+            false,
+            false,
+            "",
+            false,
+        )
+        .unwrap();
+        Structure::create(
+            &mut all_structures,
+            "content",
+            "Content",
+            "richtext",
+            "< Content goes here>",
+            30,
+            2000,
+            false,
+            false,
+            "",
+            false,
+        )
+        .unwrap();
+        Structure::create(
+            &mut all_structures,
+            "views",
+            "Views",
+            "number",
+            "0",
+            0,
+            9999,
+            false,
+            false,
+            "",
+            false,
+        )
+        .unwrap();
+        Structure::create(
+            &mut all_structures,
+            "comment",
+            "Comments",
+            "comment",
+            "0",
+            0,
+            9999,
+            false,
+            false,
+            "",
+            true,
+        )
+        .unwrap();
+        Structure::create(
+            &mut all_structures,
+            "published",
+            "Published",
+            "boolean",
+            "false",
+            0,
+            5,
+            false,
+            false,
+            "",
+            true,
+        )
+        .unwrap();
+        Collection::set_structures(&mut all_collections, &"posts".to_string(), all_structures)
+            .unwrap();
+
+        let mut all_custom_structures = Vec::<CustomStructure>::new();
+        let mut tmp_structures = Vec::<Structure>::new();
+
+        Structure::create(
+            &mut tmp_structures,
+            "uid",
+            "UID",
+            "uid",
+            "",
+            5,
+            20,
+            false,
+            true,
+            "",
+            false,
+        )
+        .unwrap();
+        Structure::create(
+            &mut tmp_structures,
+            "value",
+            "Value",
+            "text",
+            "",
+            1,
+            100,
+            false,
+            false,
+            "",
+            false,
+        )
+        .unwrap();
+
+        CustomStructure::create(&mut all_custom_structures, "comment", "comment").unwrap();
+        CustomStructure::set_structures(
+            &mut all_custom_structures,
+            &"comment".to_string(),
+            tmp_structures,
+        )
+        .unwrap();
+        Collection::set_custom_structures(
+            &mut all_collections,
+            &"posts".to_string(),
+            all_custom_structures,
+        )
+        .unwrap();
+    }
+    save_all_collections(
+        &all_collections,
+        all_collections_path.unwrap(),
+        &String::new(),
+    );
+
+    all_collections
 }
 
 fn get_encryption_key(all_mappings: &Vec<Mapping>) -> String {

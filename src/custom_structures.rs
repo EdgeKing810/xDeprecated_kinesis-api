@@ -3,7 +3,7 @@ use uuid::Uuid;
 
 #[derive(Default, Debug, Clone)]
 pub struct CustomStructure {
-    id: String,
+    pub id: String,
     name: String,
     structures: Vec<Structure>,
 }
@@ -125,7 +125,7 @@ impl CustomStructure {
 
         if !String::from(name)
             .chars()
-            .all(|c| c.is_ascii_alphanumeric() || c == '_')
+            .all(|c| c.is_ascii_alphanumeric() || c == '_' || c == ' ')
         {
             return Err(String::from("Error: name contains an invalid character"));
         }
@@ -166,6 +166,44 @@ impl CustomStructure {
 
                 let mut current_structures = custom_structure.structures.clone();
                 current_structures.push(structure);
+                custom_structure.structures = current_structures;
+
+                break;
+            }
+        }
+
+        if let None = found_custom_structure {
+            return Err(String::from("Error: Custom Structure not found"));
+        }
+
+        Ok(())
+    }
+
+    pub fn update_structure(
+        all_custom_structures: &mut Vec<CustomStructure>,
+        id: &String,
+        structure: Structure,
+    ) -> Result<(), String> {
+        let mut found_custom_structure: Option<CustomStructure> = None;
+
+        for custom_structure in all_custom_structures.iter_mut() {
+            if custom_structure.id == *id {
+                found_custom_structure = Some(custom_structure.clone());
+                let mut found_structure = false;
+
+                let mut current_structures = custom_structure.structures.clone();
+
+                for current_structure in current_structures.iter_mut() {
+                    if current_structure.id == structure.id {
+                        *current_structure = structure.clone();
+                        found_structure = true;
+                    }
+                }
+
+                if !found_structure {
+                    current_structures.push(structure);
+                }
+
                 custom_structure.structures = current_structures;
 
                 break;

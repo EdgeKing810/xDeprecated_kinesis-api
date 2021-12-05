@@ -1,0 +1,117 @@
+Mappings saved!
+Users saved!
+Projects saved!
+Configs saved!
+Collections saved!
+Ok(
+    User {
+        id: "cfcd2517-b86d-4c4d-a70e-ab4170e91ed6",
+        first_name: "Kishan",
+        last_name: "Takoordyal",
+        username: "EdgeKing810",
+        email: "kishan@konnect.dev",
+        password: "$2b$10$OUyuZAVNU9VBc.pHn0XlWOB4xOaUSWDAyoc3C0wBvXjVwtflAqu6O",
+        role: ROOT,
+    },
+)
+Projects: [
+    Project {
+        id: "konnect",
+        name: "Konnect - Social Media",
+        description: "A next-gen social media.",
+        api_path: "/api/v2/konnect",
+    },
+]
+Collections: [
+    Collection {
+        id: "posts",
+        project_id: "konnect",
+        name: "Posts",
+        description: "To store blog posts.",
+        structures: [
+            Structure {
+                id: "title",
+                name: "Title",
+                stype: TEXT,
+                default: "test title",
+                min: 5,
+                max: 20,
+                encrypted: false,
+                unique: false,
+                regex_pattern: "",
+                array: false,
+            },
+            Structure {
+                id: "cover_image",
+                name: "Cover Image",
+                stype: MEDIA,
+                default: "https://test.image.com",
+                min: 0,
+                max: 200,
+                encrypted: false,
+                unique: false,
+                regex_pattern: "",
+                array: false,
+            },
+            Structure {
+                id: "content",
+                name: "Content",
+                stype: RICHTEXT,
+                default: "< Content goes here>",
+                min: 30,
+                max: 2000,
+                encrypted: false,
+                unique: false,
+                regex_pattern: "",
+                array: false,
+            },
+            Structure {
+                id: "views",
+                name: "Views",
+                stype: NUMBER,
+                default: "0",
+                min: 0,
+                max: 9999,
+                encrypted: false,
+                unique: false,
+                regex_pattern: "",
+                array: false,
+            },
+            Structure {
+                id: "comment",
+                name: "Comments",
+                stype: CUSTOM(
+                    "comment",
+                ),
+                default: "0",
+                min: 0,
+                max: 9999,
+                encrypted: false,
+                unique: false,
+                regex_pattern: "",
+                array: true,
+            },
+            Structure {
+                id: "published",
+                name: "Published",
+                stype: CUSTOM(
+                    "boolean",
+                ),
+                default: "false",
+                min: 0,
+                max: 5,
+                encrypted: false,
+                unique: false,
+                regex_pattern: "",
+                array: true,
+            },
+        ],
+        custom_structures: [
+            CustomStructure {
+                id: "comment",
+                name: "comment",
+                structures: [],
+            },
+        ],
+    },
+]

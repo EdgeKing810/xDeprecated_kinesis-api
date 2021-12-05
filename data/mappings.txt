@@ -2,3 +2,4 @@ users=data/users.txt
 projects=data/projects.txt
 configs=data/configs.txt
 encryption_key=data/encryption_key.txt
+collections=data/collections.txt

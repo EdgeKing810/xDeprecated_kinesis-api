@@ -24,7 +24,7 @@ impl Default for Type {
 
 #[derive(Default, Debug, Clone)]
 pub struct Structure {
-    id: String,
+    pub id: String,
     name: String,
     stype: Type,
     default: String,
@@ -252,7 +252,7 @@ impl Structure {
 
         if !String::from(name)
             .chars()
-            .all(|c| c.is_ascii_alphanumeric() || c == '_')
+            .all(|c| c.is_ascii_alphanumeric() || c == '_' || c == ' ')
         {
             return Err(String::from("Error: name contains an invalid character"));
         }

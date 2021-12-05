@@ -1,10 +1,14 @@
+#![allow(unused_assignments)]
 #[cfg(test)]
 use crate::{
+    collection::{fetch_all_collections, save_all_collections, Collection},
     config::{fetch_all_configs, save_all_configs, Config},
+    custom_structures::CustomStructure,
     encryption::{fetch_encryption_key, save_encryption_key, EncryptionKey},
     io::remove_file,
     mappings::{fetch_all_mappings, save_all_mappings, Mapping},
     project::{fetch_all_projects, save_all_projects, Project},
+    structures::Structure,
     user::{fetch_all_users, save_all_users, User},
 };
 
@@ -293,7 +297,7 @@ fn test_projects() {
     );
     assert_eq!(
         test_project2,
-        Err(String::from("Error: id contains an invalid character"))
+        Err(String::from("Error: new_id contains an invalid character"))
     );
 
     let test_project2 = Project::create(
@@ -472,4 +476,161 @@ fn test_encryption() {
     if let Err(e) = saved_encryption_key {
         println!("Error: {}", e);
     }
+}
+
+#[test]
+fn test_correct_collection() {
+    let file_name: &str = "data/collection_ok_test.txt";
+    remove_file(file_name.to_string());
+
+    let mut all_collections = Vec::<Collection>::new();
+    all_collections = fetch_all_collections(file_name.to_string(), &String::new());
+
+    if !Collection::exist(&all_collections, "posts") {
+        let create_collection = Collection::create(
+            &mut all_collections,
+            "posts",
+            "konnect",
+            "Posts",
+            "To store blog posts.",
+        );
+        if let Err(e) = create_collection {
+            println!("{}", e);
+        }
+
+        let mut all_structures = Vec::<Structure>::new();
+        Structure::create(
+            &mut all_structures,
+            "title",
+            "Title",
+            "text",
+            "test title",
+            5,
+            20,
+            false,
+            false,
+            "",
+            false,
+        )
+        .unwrap();
+        Structure::create(
+            &mut all_structures,
+            "cover_image",
+            "Cover Image",
+            "media",
+            "https://test.image.com",
+            0,
+            200,
+            false,
+            false,
+            "",
+            false,
+        )
+        .unwrap();
+        Structure::create(
+            &mut all_structures,
+            "content",
+            "Content",
+            "richtext",
+            "< Content goes here>",
+            30,
+            2000,
+            false,
+            false,
+            "",
+            false,
+        )
+        .unwrap();
+        Structure::create(
+            &mut all_structures,
+            "views",
+            "Views",
+            "number",
+            "0",
+            0,
+            9999,
+            false,
+            false,
+            "",
+            false,
+        )
+        .unwrap();
+        Structure::create(
+            &mut all_structures,
+            "comment",
+            "Comments",
+            "comment",
+            "0",
+            0,
+            9999,
+            false,
+            false,
+            "",
+            true,
+        )
+        .unwrap();
+        Structure::create(
+            &mut all_structures,
+            "published",
+            "Published",
+            "boolean",
+            "false",
+            0,
+            5,
+            false,
+            false,
+            "",
+            true,
+        )
+        .unwrap();
+        Collection::set_structures(&mut all_collections, &"posts".to_string(), all_structures)
+            .unwrap();
+
+        let mut all_custom_structures = Vec::<CustomStructure>::new();
+        let mut tmp_structures = Vec::<Structure>::new();
+
+        Structure::create(
+            &mut tmp_structures,
+            "uid",
+            "UID",
+            "uid",
+            "",
+            5,
+            20,
+            false,
+            true,
+            "",
+            false,
+        )
+        .unwrap();
+        Structure::create(
+            &mut tmp_structures,
+            "value",
+            "Value",
+            "text",
+            "",
+            1,
+            100,
+            false,
+            false,
+            "",
+            false,
+        )
+        .unwrap();
+
+        CustomStructure::create(&mut all_custom_structures, "comment", "comment").unwrap();
+        CustomStructure::set_structures(
+            &mut all_custom_structures,
+            &"comment".to_string(),
+            tmp_structures,
+        )
+        .unwrap();
+        Collection::set_custom_structures(
+            &mut all_collections,
+            &"posts".to_string(),
+            all_custom_structures,
+        )
+        .unwrap();
+    }
+    save_all_collections(&all_collections, file_name.to_string(), &String::new());
 }
