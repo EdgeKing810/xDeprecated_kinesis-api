@@ -1,7 +1,7 @@
 use crate::custom_structures::CustomStructure;
 use crate::io::{fetch_file, save_file};
 use crate::structures::Structure;
-use uuid::Uuid;
+// use uuid::Uuid;
 
 #[derive(Default, Debug, Clone)]
 pub struct Collection {
@@ -21,17 +21,16 @@ impl Collection {
         name: &str,
         description: &str,
     ) -> Result<(), String> {
-        if Self::exist(collections, id) {
-            let new_id = Uuid::new_v4();
-            return Self::create(
-                collections,
-                &*new_id.to_string(),
-                project_id,
-                name,
-                description,
-            );
-        }
-
+        // if Self::exist(collections, id) {
+        //     let new_id = Uuid::new_v4();
+        //     return Self::create(
+        //         collections,
+        //         &*new_id.to_string(),
+        //         project_id,
+        //         name,
+        //         description,
+        //     );
+        // }
         let tmp_id = String::from("test;");
         let mut new_id = String::from(id);
 
@@ -124,7 +123,7 @@ impl Collection {
             .chars()
             .all(|c| c.is_ascii_alphanumeric() || c == '_' || c == '-')
         {
-            return Err(String::from("Error: id contains an invalid character"));
+            return Err(String::from("Error: new_id contains an invalid character"));
         }
 
         if String::from(new_id.trim()).len() < 1 {
@@ -159,7 +158,9 @@ impl Collection {
             .chars()
             .all(|c| c.is_ascii_alphanumeric() || c == '_' || c == '-')
         {
-            return Err(String::from("Error: id contains an invalid character"));
+            return Err(String::from(
+                "Error: project_id contains an invalid character",
+            ));
         }
 
         if String::from(project_id.trim()).len() < 1 {
@@ -233,7 +234,7 @@ impl Collection {
 
         if !String::from(description)
             .chars()
-            .all(|c| c != ';' && c != '|' && c != '^' && c != '$')
+            .all(|c| c != ';' && c != '@' && c != '>' && c != '#')
         {
             return Err(String::from(
                 "Error: description contains an invalid character",
@@ -550,13 +551,13 @@ pub fn fetch_all_collections(path: String, encryption_key: &String) -> Vec<Colle
             current_collection[0],
             current_collection[1],
             current_collection[2],
-            current_collection[3].split("^").collect::<Vec<&str>>()[0],
+            current_collection[3].split(">").collect::<Vec<&str>>()[0],
         );
         if let Err(e) = create_collection {
             println!("{}", e);
         }
 
-        let current_structures = collection.split("^").collect::<Vec<&str>>()[1];
+        let current_structures = collection.split(">").collect::<Vec<&str>>()[1];
         let individual_structures = current_structures.split("%").collect::<Vec<&str>>();
         let mut final_structures: Vec<Structure> = vec![];
         for structure in individual_structures {
@@ -611,9 +612,9 @@ pub fn fetch_all_collections(path: String, encryption_key: &String) -> Vec<Colle
             }
         }
 
-        let current_custom_structures = collection.split("^").collect::<Vec<&str>>()[2];
+        let current_custom_structures = collection.split(">").collect::<Vec<&str>>()[2];
         let individual_custom_structures =
-            current_custom_structures.split("$").collect::<Vec<&str>>();
+            current_custom_structures.split("#").collect::<Vec<&str>>();
         let mut final_custom_structures: Vec<CustomStructure> = vec![];
         for custom_structure in individual_custom_structures {
             let current_custom_structure = custom_structure.split("|").collect::<Vec<&str>>();
@@ -728,7 +729,7 @@ pub fn save_all_collections(collections: &Vec<Collection>, path: String, encrypt
             CustomStructure::stringify(&collection.custom_structures);
 
         stringified_collections = format!(
-            "{}{}{};{};{};{}^{}^{}",
+            "{}{}{};{};{};{}>{}>{}",
             stringified_collections,
             if stringified_collections.chars().count() > 1 {
                 "\n"

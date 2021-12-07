@@ -1,4 +1,4 @@
-use uuid::Uuid;
+// use uuid::Uuid;
 
 #[derive(Debug, Clone)]
 pub enum Type {
@@ -50,23 +50,22 @@ impl Structure {
         regex_pattern: &str,
         array: bool,
     ) -> Result<(), String> {
-        if Self::exist(all_structures, id) {
-            let new_id = Uuid::new_v4();
-            return Self::create(
-                all_structures,
-                &*new_id.to_string(),
-                name,
-                stype_txt,
-                default,
-                min,
-                max,
-                encrypted,
-                unique,
-                regex_pattern,
-                array,
-            );
-        }
-
+        // if Self::exist(all_structures, id) {
+        //     let new_id = Uuid::new_v4();
+        //     return Self::create(
+        //         all_structures,
+        //         &*new_id.to_string(),
+        //         name,
+        //         stype_txt,
+        //         default,
+        //         min,
+        //         max,
+        //         encrypted,
+        //         unique,
+        //         regex_pattern,
+        //         array,
+        //     );
+        // }
         let tmp_id = String::from("test;");
         let mut new_id = String::from(id);
 
@@ -208,7 +207,7 @@ impl Structure {
         let mut found_structure: Option<Structure> = None;
 
         for structure in all_structures.iter_mut() {
-            if structure.id == *new_id {
+            if structure.id == new_id {
                 return Err(String::from("Error: id is already in use"));
             }
         }
@@ -287,6 +286,15 @@ impl Structure {
     ) -> Result<(), String> {
         let mut found_structure: Option<Structure> = None;
 
+        if !String::from(stype_txt)
+            .chars()
+            .all(|c| c != ';' && c != '@' && c != '>' && c != '#')
+        {
+            return Err(String::from(
+                "Error: stype_txt contains an invalid character",
+            ));
+        }
+
         let stype = match stype_txt {
             "text" => Type::TEXT,
             "email" => Type::EMAIL,
@@ -323,6 +331,13 @@ impl Structure {
         default: &str,
     ) -> Result<(), String> {
         let mut found_structure: Option<Structure> = None;
+
+        if !String::from(default)
+            .chars()
+            .all(|c| c != ';' && c != '@' && c != '>' && c != '#')
+        {
+            return Err(String::from("Error: default contains an invalid character"));
+        }
 
         for structure in all_structures.iter_mut() {
             if structure.id == *id {
@@ -433,6 +448,15 @@ impl Structure {
         regex_pattern: &str,
     ) -> Result<(), String> {
         let mut found_structure: Option<Structure> = None;
+
+        if !String::from(regex_pattern)
+            .chars()
+            .all(|c| c != ';' && c != '@' && c != '>' && c != '#')
+        {
+            return Err(String::from(
+                "Error: regex_pattern contains an invalid character",
+            ));
+        }
 
         for structure in all_structures.iter_mut() {
             if structure.id == *id {

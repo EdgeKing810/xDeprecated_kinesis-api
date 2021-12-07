@@ -1,0 +1,1 @@
+posts;konnect;Posts;To store blog posts.>title|Title|text|test title|5|20|false|false||false>comment|comment|uid|UID|uid||5|20|false|true||false%value|Value|text||1|100|false|false||false

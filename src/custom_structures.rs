@@ -1,5 +1,5 @@
+// use uuid::Uuid;
 use crate::structures::Structure;
-use uuid::Uuid;
 
 #[derive(Default, Debug, Clone)]
 pub struct CustomStructure {
@@ -14,10 +14,10 @@ impl CustomStructure {
         id: &str,
         name: &str,
     ) -> Result<(), String> {
-        if Self::exist(all_custom_structures, id) {
-            let new_id = Uuid::new_v4();
-            return Self::create(all_custom_structures, &*new_id.to_string(), name);
-        }
+        // if Self::exist(all_custom_structures, id) {
+        //     let new_id = Uuid::new_v4();
+        //     return Self::create(all_custom_structures, &*new_id.to_string(), name);
+        // }
 
         let tmp_id = String::from("test;");
         let mut new_id = String::from(id);
@@ -81,7 +81,7 @@ impl CustomStructure {
         let mut found_custom_structure: Option<CustomStructure> = None;
 
         for custom_structure in all_custom_structures.iter_mut() {
-            if custom_structure.id == *new_id {
+            if custom_structure.id == new_id {
                 return Err(String::from("Error: id is already in use"));
             }
         }
@@ -312,7 +312,7 @@ impl CustomStructure {
                 "{}{}{}|{}|{}",
                 stringified_custom_structures,
                 if stringified_custom_structures.chars().count() > 1 {
-                    "$"
+                    "#"
                 } else {
                     ""
                 },

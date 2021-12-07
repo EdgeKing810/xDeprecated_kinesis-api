@@ -1,11 +1,12 @@
 
-running 6 tests
-test tests::test_configs ... ok
+running 7 tests
+test tests::test_encryption ... ok
 test tests::test_mappings ... ok
+test tests::test_configs ... ok
+test tests::test_incorrect_collection ... ok
 test tests::test_projects ... ok
 test tests::test_correct_collection ... ok
-test tests::test_encryption ... ok
 test tests::test_users ... ok
 
-test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 8.34s
+test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 8.45s
 

@@ -309,7 +309,7 @@ fn initialize_collections(mappings: &Vec<Mapping>) -> Vec<Collection> {
             "content",
             "Content",
             "richtext",
-            "< Content goes here>",
+            "[ Content goes here ]",
             30,
             2000,
             false,
