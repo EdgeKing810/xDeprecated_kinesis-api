@@ -588,7 +588,7 @@ pub fn fetch_all_collections(path: String, encryption_key: &String) -> Vec<Colle
                 println!("{}", e);
             }
 
-            let current_structures = current_custom_structure[2];
+            let current_structures = current_custom_structure[2..].join("|");
             let individual_structures = current_structures.split("%").collect::<Vec<&str>>();
             let mut final_structures_custom: Vec<Structure> = vec![];
             for structure in individual_structures {

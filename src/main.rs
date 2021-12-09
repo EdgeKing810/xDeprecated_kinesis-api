@@ -408,12 +408,13 @@ fn initialize_collections(mappings: &Vec<Mapping>) -> Vec<Collection> {
             all_custom_structures,
         )
         .unwrap();
+
+        save_all_collections(
+            &all_collections,
+            all_collections_path.unwrap(),
+            &String::new(),
+        );
     }
-    save_all_collections(
-        &all_collections,
-        all_collections_path.unwrap(),
-        &String::new(),
-    );
 
     all_collections
 }

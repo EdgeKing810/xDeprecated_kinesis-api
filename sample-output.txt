@@ -2,7 +2,6 @@ Mappings saved!
 Users saved!
 Projects saved!
 Configs saved!
-Collections saved!
 Ok(
     User {
         id: "cfcd2517-b86d-4c4d-a70e-ab4170e91ed6",
@@ -57,7 +56,7 @@ Collections: [
                 id: "content",
                 name: "Content",
                 stype: RICHTEXT,
-                default: "< Content goes here>",
+                default: "[ Content goes here ]",
                 min: 30,
                 max: 2000,
                 encrypted: false,
@@ -110,7 +109,32 @@ Collections: [
             CustomStructure {
                 id: "comment",
                 name: "comment",
-                structures: [],
+                structures: [
+                    Structure {
+                        id: "uid",
+                        name: "UID",
+                        stype: UID,
+                        default: "",
+                        min: 5,
+                        max: 20,
+                        encrypted: false,
+                        unique: true,
+                        regex_pattern: "",
+                        array: false,
+                    },
+                    Structure {
+                        id: "value",
+                        name: "Value",
+                        stype: TEXT,
+                        default: "",
+                        min: 1,
+                        max: 100,
+                        encrypted: false,
+                        unique: false,
+                        regex_pattern: "",
+                        array: false,
+                    },
+                ],
             },
         ],
     },
