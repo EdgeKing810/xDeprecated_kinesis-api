@@ -563,52 +563,8 @@ pub fn fetch_all_collections(path: String, encryption_key: &String) -> Vec<Colle
         for structure in individual_structures {
             let current_structure = structure.split("|").collect::<Vec<&str>>();
 
-            if current_structure.len() <= 1 {
-                break;
-            }
-
-            let min = current_structure[4].parse::<usize>();
-            if let Err(e) = min {
-                println!("{}", e);
+            if !try_add_structure(&current_structure, &mut final_structures) {
                 continue;
-            }
-
-            let max = current_structure[5].parse::<usize>();
-            if let Err(e) = max {
-                println!("{}", e);
-                continue;
-            }
-
-            let encrypted = match current_structure[6] {
-                "true" => true,
-                _ => false,
-            };
-
-            let unique = match current_structure[7] {
-                "true" => true,
-                _ => false,
-            };
-
-            let array = match current_structure[9] {
-                "true" => true,
-                _ => false,
-            };
-
-            let create_structure = Structure::create(
-                &mut final_structures,
-                current_structure[0],
-                current_structure[1],
-                current_structure[2],
-                current_structure[3],
-                min.unwrap(),
-                max.unwrap(),
-                encrypted,
-                unique,
-                current_structure[8],
-                array,
-            );
-            if let Err(e) = create_structure {
-                println!("{}", e);
             }
         }
 
@@ -638,52 +594,8 @@ pub fn fetch_all_collections(path: String, encryption_key: &String) -> Vec<Colle
             for structure in individual_structures {
                 let current_structure = structure.split("|").collect::<Vec<&str>>();
 
-                if current_structure.len() <= 1 {
-                    break;
-                }
-
-                let min = current_structure[4].parse::<usize>();
-                if let Err(e) = min {
-                    println!("{}", e);
+                if !try_add_structure(&current_structure, &mut final_structures_custom) {
                     continue;
-                }
-
-                let max = current_structure[5].parse::<usize>();
-                if let Err(e) = max {
-                    println!("{}", e);
-                    continue;
-                }
-
-                let encrypted = match current_structure[6] {
-                    "true" => true,
-                    _ => false,
-                };
-
-                let unique = match current_structure[7] {
-                    "true" => true,
-                    _ => false,
-                };
-
-                let array = match current_structure[9] {
-                    "true" => true,
-                    _ => false,
-                };
-
-                let create_structure = Structure::create(
-                    &mut final_structures_custom,
-                    current_structure[0],
-                    current_structure[1],
-                    current_structure[2],
-                    current_structure[3],
-                    min.unwrap(),
-                    max.unwrap(),
-                    encrypted,
-                    unique,
-                    current_structure[8],
-                    array,
-                );
-                if let Err(e) = create_structure {
-                    println!("{}", e);
                 }
             }
 
@@ -717,6 +629,59 @@ pub fn fetch_all_collections(path: String, encryption_key: &String) -> Vec<Colle
     }
 
     final_collections
+}
+
+fn try_add_structure(array: &Vec<&str>, final_structures: &mut Vec<Structure>) -> bool {
+    if array.len() <= 1 {
+        return false;
+    }
+
+    let min = array[4].parse::<usize>();
+    if let Err(e) = min {
+        println!("{}", e);
+        return false;
+    }
+
+    let max = array[5].parse::<usize>();
+    if let Err(e) = max {
+        println!("{}", e);
+        return false;
+    }
+
+    let encrypted = match array[6] {
+        "true" => true,
+        _ => false,
+    };
+
+    let unique = match array[7] {
+        "true" => true,
+        _ => false,
+    };
+
+    let is_array = match array[9] {
+        "true" => true,
+        _ => false,
+    };
+
+    let create_structure = Structure::create(
+        final_structures,
+        array[0],
+        array[1],
+        array[2],
+        array[3],
+        min.unwrap(),
+        max.unwrap(),
+        encrypted,
+        unique,
+        array[8],
+        is_array,
+    );
+
+    if let Err(e) = create_structure {
+        println!("{}", e);
+    }
+
+    true
 }
 
 pub fn save_all_collections(collections: &Vec<Collection>, path: String, encryption_key: &String) {
