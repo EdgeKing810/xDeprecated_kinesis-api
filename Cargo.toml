@@ -1,13 +1,21 @@
 [package]
 name = "kinesis-db"
+description = "A secure, portable and fast database written in Rust for Kinesis API"
+repository = "https://github.com/EdgeKing810/kinesis-db"
+license = "MIT"
 version = "0.1.0"
 edition = "2018"
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+[lib]
+crate-type = ["cdylib", "rlib"]
 
 [dependencies]
-uuid = { version = "0.8.2", features = ["v4"] }
-pwhash = "1.0.0"
 regex = "1"
-rand = "0.8.4"
 magic-crypt = "3.1.9"
+wasm-bindgen = "=0.2.61"
+fastrand = "1.5.0"
+blowfish = { version = "0.8", features = ["bcrypt"] }
+base64 = { version = "0.13", default-features = false }
+
+[profile.release] 
+opt-level = "s"

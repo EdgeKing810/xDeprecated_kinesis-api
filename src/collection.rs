@@ -1,7 +1,7 @@
 use crate::custom_structures::CustomStructure;
 use crate::io::{fetch_file, save_file};
 use crate::structures::Structure;
-// use uuid::Uuid;
+// use crate::encryption::{EncryptionKey};
 
 #[derive(Default, Debug, Clone)]
 pub struct Collection {
@@ -22,7 +22,7 @@ impl Collection {
         description: &str,
     ) -> Result<(), String> {
         // if Self::exist(collections, id) {
-        //     let new_id = Uuid::new_v4();
+        //     let new_id = EncryptionKey::generate_uuid();
         //     return Self::create(
         //         collections,
         //         &*new_id.to_string(),

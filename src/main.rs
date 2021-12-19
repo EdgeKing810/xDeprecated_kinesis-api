@@ -22,6 +22,10 @@ mod project;
 mod structures;
 mod tests;
 mod user;
+mod bcrypt;
+
+#[path = "bindings/bindings_user.rs"]
+mod bindings_user;
 
 const MAPPINGS_PATH: &str = "data/mappings.txt";
 const TMP_PASSWORD: &str = "Test123*";

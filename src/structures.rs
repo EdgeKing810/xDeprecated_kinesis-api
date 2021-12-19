@@ -1,4 +1,4 @@
-// use uuid::Uuid;
+// use crate::encryption::EncryptionKey;
 
 #[derive(Debug, Clone)]
 pub enum Type {
@@ -51,7 +51,7 @@ impl Structure {
         array: bool,
     ) -> Result<(), String> {
         // if Self::exist(all_structures, id) {
-        //     let new_id = Uuid::new_v4();
+        //     let new_id = EncryptionKey::generate_uuid(8);
         //     return Self::create(
         //         all_structures,
         //         &*new_id.to_string(),

@@ -5,8 +5,25 @@ bigger project.
 
 ### Getting Started
 
-After cloning the project, you should be getting no errors when running a `cargo run` from the
+After cloning the project, you should be getting no errors when running a `cargo run --force --bin kinesis-db` from the
 directory of the cloned project. Furthermore, all tests should be OK when running a `cargo test`.
+
+### Running
+
+To run the project as a normal bin project, just do a
+
+```bash
+cargo run --bin kinesis-db
+```
+
+To run this project with Kinesis API, ensure the API project is cloned in the root directory and accessible in the
+`api/` directory. Then just execute the bash script found in the root directory of this project itself to package
+Kinesis DB as a JS package glued with WASM.
+
+```
+chmod +x build-wasm.sh
+./build-wasm.sh
+```
 
 ### Contributing
 

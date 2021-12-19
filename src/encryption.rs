@@ -1,34 +1,44 @@
 use crate::io::{fetch_file, save_file};
 use magic_crypt::MagicCryptTrait;
-use rand::prelude::*;
 
 #[derive(Default, Clone, Debug)]
 pub struct EncryptionKey(pub String);
 
 impl EncryptionKey {
-    pub fn generate(length: usize) -> EncryptionKey {
-        let charset = String::from("abcdefghijklmnopqrstuvwxyz*.=_$%0123456789");
+    pub fn generate_uuid(length: usize) -> String {
+        let charset = String::from("abcdefghijklmnopqrstuvwxyz0123456789");
 
-        let mut key: String = String::new();
+        let mut uuid: String = String::new();
 
-        for _ in 0..length {
-            let mut rng = rand::thread_rng();
-            let index: f64 = rng.gen();
-            let mut index_int: usize = (index * charset.len() as f64).round() as usize;
+        for _ in 0..5 {
+            for _ in 0..length {
+                let index: f64 = fastrand::f64();
+                let mut index_int: usize = (index * charset.len() as f64).round() as usize;
 
-            if index_int >= charset.len() {
-                index_int -= charset.len() - 1;
+                if index_int >= charset.len() {
+                    index_int -= charset.len() - 1;
+                }
+
+                let mut chosen_char = charset.as_bytes()[index_int] as char;
+
+                if fastrand::bool() && chosen_char.is_alphabetic() {
+                    chosen_char = chosen_char.to_uppercase().collect::<Vec<_>>()[0];
+                }
+
+                uuid.push(chosen_char);
             }
-
-            let mut chosen_char = charset.as_bytes()[index_int] as char;
-
-            let random_uppercase: f64 = rng.gen();
-            if random_uppercase > 0.5 && chosen_char.is_alphabetic() {
-                chosen_char = chosen_char.to_uppercase().collect::<Vec<_>>()[0];
-            }
-
-            key.push(chosen_char);
+            uuid.push('-')
         }
+
+        let random_f: f64 = fastrand::f64();
+        let index_int: u32 = (random_f * 9999 as f64).round() as u32;
+        uuid = format!("{}{}", uuid, index_int.to_string());
+
+        uuid
+    }
+
+    pub fn generate(length: usize) -> EncryptionKey {
+        let key: String = EncryptionKey::generate_uuid(length);
 
         EncryptionKey(key)
     }

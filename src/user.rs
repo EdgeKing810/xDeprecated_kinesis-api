@@ -1,7 +1,8 @@
 use crate::io::{fetch_file, save_file};
-use pwhash::{bcrypt, unix};
 use regex::Regex;
-use uuid::Uuid;
+use crate::encryption::EncryptionKey;
+
+use crate::bcrypt::{DEFAULT_COST, hash, verify};
 
 #[derive(Debug, Clone)]
 pub enum Role {
@@ -113,7 +114,7 @@ impl User {
         password: &str,
         role_numeric: u32,
     ) -> Result<(), String> {
-        let id = Uuid::new_v4();
+        let id = EncryptionKey::generate_uuid(8);
         let uid = id.to_string();
 
         let mut has_error: bool = false;
@@ -125,7 +126,7 @@ impl User {
             last_name: "".to_string(),
             username: "".to_string(),
             email: "".to_string(),
-            password: bcrypt::hash("").unwrap().to_string(),
+            password: hash("", DEFAULT_COST).unwrap().to_string(),
             role: Role::default(),
         };
         all_users.push(new_user);
@@ -200,8 +201,8 @@ impl User {
         }
 
         let correct_password =
-            unix::verify(password.trim(), &*found_user.as_ref().unwrap().password);
-        if !correct_password {
+            verify(password.trim(), &*found_user.as_ref().unwrap().password);
+        if !correct_password.is_ok() {
             return Err(String::from("Error: Password mismatch"));
         }
 
@@ -395,7 +396,7 @@ impl User {
         for user in all_users.iter_mut() {
             if user.id == id.to_string() {
                 found_user = Some(user.clone());
-                user.password = bcrypt::hash(password.trim()).unwrap().to_string();
+                user.password = hash(password.trim(), DEFAULT_COST).unwrap().to_string();
                 break;
             }
         }
@@ -467,24 +468,32 @@ impl User {
 
         Ok(())
     }
-}
 
-pub fn fetch_all_users(path: String, encryption_key: &String) -> Vec<User> {
-    let all_users_raw = fetch_file(path.clone(), encryption_key);
+    pub fn to_string(user: User) -> String {
+        let number_role: u32 = match user.role {
+            Role::ROOT => 0,
+            Role::ADMIN => 1,
+            _ => 2,
+        };
 
-    let individual_users = all_users_raw
-        .split("\n")
-        .filter(|line| line.chars().count() >= 3);
+        format!(
+            "{};{};{};{};{};{};{}",
+            user.id,
+            user.first_name,
+            user.last_name,
+            user.username,
+            user.email,
+            user.password,
+            number_role
+        )
+    }
 
-    let mut final_users: Vec<User> = Vec::<User>::new();
-
-    for user in individual_users {
-        let current_user = user.split(";").collect::<Vec<&str>>();
+    pub fn from_string(user_str: &str) -> User {
+        let current_user = user_str.split(";").collect::<Vec<&str>>();
 
         let parsed_role_raw = current_user[6].parse::<u32>();
-        if let Err(e) = parsed_role_raw {
-            println!("Error when parsing role in {}: {}", path, e);
-            break;
+        if let Err(e) = parsed_role_raw.clone() {
+            println!("Error when parsing role: {}", e);
         }
 
         let mut parsed_role: u32 = 2;
@@ -498,7 +507,7 @@ pub fn fetch_all_users(path: String, encryption_key: &String) -> Vec<User> {
             _ => Role::AUTHOR,
         };
 
-        let tmp_user = User::create_no_check(
+        User::create_no_check(
             current_user[0],
             current_user[1],
             current_user[2],
@@ -506,7 +515,21 @@ pub fn fetch_all_users(path: String, encryption_key: &String) -> Vec<User> {
             current_user[4],
             current_user[5],
             role,
-        );
+        )
+    }
+}
+
+pub fn fetch_all_users(path: String, encryption_key: &String) -> Vec<User> {
+    let all_users_raw = fetch_file(path.clone(), encryption_key);
+
+    let individual_users = all_users_raw
+        .split("\n")
+        .filter(|line| line.chars().count() >= 3);
+
+    let mut final_users: Vec<User> = Vec::<User>::new();
+
+    for user in individual_users {
+        let tmp_user = User::from_string(user);
         final_users.push(tmp_user);
     }
 
@@ -517,27 +540,15 @@ pub fn save_all_users(users: &Vec<User>, path: String, encryption_key: &String) 
     let mut stringified_users = String::new();
 
     for user in users {
-        let number_role: u32 = match user.role {
-            Role::ROOT => 0,
-            Role::ADMIN => 1,
-            _ => 2,
-        };
-
         stringified_users = format!(
-            "{}{}{};{};{};{};{};{};{}",
+            "{}{}{}",
             stringified_users,
             if stringified_users.chars().count() > 1 {
                 "\n"
             } else {
                 ""
             },
-            user.id,
-            user.first_name,
-            user.last_name,
-            user.username,
-            user.email,
-            user.password,
-            number_role
+            User::to_string(user.clone())
         );
     }
 

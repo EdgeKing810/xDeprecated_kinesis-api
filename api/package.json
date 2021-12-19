@@ -1,0 +1,26 @@
+{
+  "name": "kinesis-api",
+  "version": "1.0.0",
+  "description": "A powerful and secure API.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://repo.kinesis.games/backend/kinesis-api.git"
+  },
+  "keywords": [
+    "nodejs",
+    "node"
+  ],
+  "author": "Kishan Takoordyal <kishan@konnect.dev> (https://me.konnect.dev)",
+  "license": "MIT",
+  "type": "module",
+  "dependencies": {
+    "kinesis-db": "file:../pkg"
+  },
+  "devDependencies": {
+    "hello-wasm-pack": "^0.1.0"
+  }
+}

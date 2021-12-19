@@ -1,5 +1,5 @@
-// use uuid::Uuid;
 use crate::structures::Structure;
+// use crate::encryption::EncryptionKey;
 
 #[derive(Default, Debug, Clone)]
 pub struct CustomStructure {
@@ -15,7 +15,7 @@ impl CustomStructure {
         name: &str,
     ) -> Result<(), String> {
         // if Self::exist(all_custom_structures, id) {
-        //     let new_id = Uuid::new_v4();
+        //     let new_id = EncryptionKey::generate_uuid(8);
         //     return Self::create(all_custom_structures, &*new_id.to_string(), name);
         // }
 
