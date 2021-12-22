@@ -22,7 +22,7 @@ pub fn turn_structures_to_str(structures: Vec<Structure>) -> String {
             "{}{}{}",
             stringified_structures,
             if stringified_structures.chars().count() > 1 {
-                "\n"
+                "%"
             } else {
                 ""
             },

@@ -1,4 +1,4 @@
-use crate::structures::Structure;
+use crate::structures::{try_add_structure, Structure};
 // use crate::encryption::EncryptionKey;
 
 #[derive(Default, Debug, Clone)]
@@ -306,22 +306,63 @@ impl CustomStructure {
         let mut stringified_custom_structures = String::new();
 
         for custom_structure in all_custom_structures {
-            let stringified_structures = Structure::stringify(&custom_structure.structures);
-
             stringified_custom_structures = format!(
-                "{}{}{}|{}|{}",
+                "{}{}{}",
                 stringified_custom_structures,
                 if stringified_custom_structures.chars().count() > 1 {
                     "#"
                 } else {
                     ""
                 },
-                custom_structure.id,
-                custom_structure.name,
-                stringified_structures,
+                CustomStructure::to_string(custom_structure.clone()),
             );
         }
 
         stringified_custom_structures
+    }
+
+    pub fn from_string(custom_structure_str: &str) -> Result<CustomStructure, String> {
+        let current_custom_structure = custom_structure_str.split("|").collect::<Vec<&str>>();
+
+        if current_custom_structure.len() < 3 {
+            return Err(String::from(
+                "Error: Wrong format for Custom Structure data",
+            ));
+        }
+
+        let mut tmp_custom_structures = Vec::<CustomStructure>::new();
+
+        let create_custom_structure = CustomStructure::create(
+            &mut tmp_custom_structures,
+            current_custom_structure[0],
+            current_custom_structure[1],
+        );
+
+        if let Err(e) = create_custom_structure {
+            return Err(e);
+        }
+
+        let mut tmp_structures = Vec::<Structure>::new();
+        let current_structures = current_custom_structure[2..].join("|");
+        let individual_structures = current_structures.split("%").collect::<Vec<&str>>();
+
+        for structure in individual_structures {
+            let current_structure = structure.split("|").collect::<Vec<&str>>();
+
+            if !try_add_structure(&current_structure, &mut tmp_structures) {
+                continue;
+            }
+        }
+
+        Ok(tmp_custom_structures[0].clone())
+    }
+
+    pub fn to_string(custom_structure: CustomStructure) -> String {
+        let stringified_structures = Structure::stringify(&custom_structure.structures);
+
+        format!(
+            "{}|{}|{}",
+            custom_structure.id, custom_structure.name, stringified_structures
+        )
     }
 }

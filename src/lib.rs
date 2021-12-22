@@ -26,6 +26,8 @@ mod bindings_project;
 #[path = "bindings/bindings_user.rs"]
 mod bindings_user;
 
+#[path = "bindings/bindings_custom_structures.rs"]
+mod bindings_custom_structures;
 #[path = "bindings/bindings_structures.rs"]
 mod bindings_structures;
 
