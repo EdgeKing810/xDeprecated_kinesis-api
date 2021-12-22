@@ -130,6 +130,17 @@ impl Config {
 
         Ok(())
     }
+
+    pub fn to_string(config: Config) -> String {
+        format!("{}|{}", config.name,
+        config.value)
+    }
+
+    pub fn from_string(config_str: &str) -> Config {
+        let current_config = config_str.split("|").collect::<Vec<&str>>();
+
+        Config::create_no_check(current_config[0], current_config[1])
+    }
 }
 
 pub fn fetch_all_configs(path: String, encryption_key: &String) -> Vec<Config> {
@@ -142,9 +153,7 @@ pub fn fetch_all_configs(path: String, encryption_key: &String) -> Vec<Config> {
     let mut final_configs: Vec<Config> = Vec::<Config>::new();
 
     for config in individual_configs {
-        let current_config = config.split("|").collect::<Vec<&str>>();
-
-        let tmp_config = Config::create_no_check(current_config[0], current_config[1]);
+        let tmp_config = Config::from_string(config);
         final_configs.push(tmp_config);
     }
 
@@ -156,15 +165,14 @@ pub fn save_all_configs(configs: &Vec<Config>, path: String, encryption_key: &St
 
     for config in configs {
         stringified_configs = format!(
-            "{}{}{}|{}",
+            "{}{}{}",
             stringified_configs,
             if stringified_configs.chars().count() > 1 {
                 "\n"
             } else {
                 ""
             },
-            config.name,
-            config.value,
+            Config::to_string(config.clone()),
         );
     }
 

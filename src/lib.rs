@@ -23,6 +23,8 @@ mod bindings_mappings;
 mod bindings_project;
 #[path = "bindings/bindings_user.rs"]
 mod bindings_user;
+#[path = "bindings/bindings_config.rs"]
+mod bindings_config;
 
 const MAPPINGS_PATH: &str = "data/mappings.txt";
 
