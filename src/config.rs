@@ -132,8 +132,7 @@ impl Config {
     }
 
     pub fn to_string(config: Config) -> String {
-        format!("{}|{}", config.name,
-        config.value)
+        format!("{}|{}", config.name, config.value)
     }
 
     pub fn from_string(config_str: &str) -> Config {

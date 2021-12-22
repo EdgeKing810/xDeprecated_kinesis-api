@@ -43,11 +43,7 @@ pub fn config_exists(configs: &str, name: &str) -> usize {
 }
 
 #[wasm_bindgen]
-pub fn create_config(
-    configs: &str,
-    name: &str,
-    value: &str,
-) -> String {
+pub fn create_config(configs: &str, name: &str, value: &str) -> String {
     let mut all_configs = get_configs_from_str(configs);
     let result = Config::create(&mut all_configs, name, value);
 
@@ -59,11 +55,7 @@ pub fn create_config(
 }
 
 #[wasm_bindgen]
-pub fn update_config_value(
-    configs: &str,
-    name: &str,
-    value: &str,
-) -> String {
+pub fn update_config_value(configs: &str, name: &str, value: &str) -> String {
     let mut all_configs = get_configs_from_str(configs);
     let result = Config::update_value(&mut all_configs, name, value);
 
@@ -75,10 +67,7 @@ pub fn update_config_value(
 }
 
 #[wasm_bindgen]
-pub fn delete_config(
-    configs: &str,
-    name: &str,
-) -> String {
+pub fn delete_config(configs: &str, name: &str) -> String {
     let mut all_configs = get_configs_from_str(configs);
     let result = Config::delete(&mut all_configs, name);
 

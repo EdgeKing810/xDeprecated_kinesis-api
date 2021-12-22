@@ -1,6 +1,6 @@
 use crate::custom_structures::CustomStructure;
 use crate::io::{fetch_file, save_file};
-use crate::structures::Structure;
+use crate::structures::{try_add_structure, Structure};
 // use crate::encryption::{EncryptionKey};
 
 #[derive(Default, Debug, Clone)]
@@ -629,59 +629,6 @@ pub fn fetch_all_collections(path: String, encryption_key: &String) -> Vec<Colle
     }
 
     final_collections
-}
-
-fn try_add_structure(array: &Vec<&str>, final_structures: &mut Vec<Structure>) -> bool {
-    if array.len() <= 1 {
-        return false;
-    }
-
-    let min = array[4].parse::<usize>();
-    if let Err(e) = min {
-        println!("{}", e);
-        return false;
-    }
-
-    let max = array[5].parse::<usize>();
-    if let Err(e) = max {
-        println!("{}", e);
-        return false;
-    }
-
-    let encrypted = match array[6] {
-        "true" => true,
-        _ => false,
-    };
-
-    let unique = match array[7] {
-        "true" => true,
-        _ => false,
-    };
-
-    let is_array = match array[9] {
-        "true" => true,
-        _ => false,
-    };
-
-    let create_structure = Structure::create(
-        final_structures,
-        array[0],
-        array[1],
-        array[2],
-        array[3],
-        min.unwrap(),
-        max.unwrap(),
-        encrypted,
-        unique,
-        array[8],
-        is_array,
-    );
-
-    if let Err(e) = create_structure {
-        println!("{}", e);
-    }
-
-    true
 }
 
 pub fn save_all_collections(collections: &Vec<Collection>, path: String, encryption_key: &String) {

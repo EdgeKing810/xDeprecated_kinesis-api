@@ -9,9 +9,9 @@ rm -rf pkg/
 mkdir -p ${API_DIR}/node_modules/
 rm -rf ${API_DIR}/node_modules/${NAME} ${API_DIR}/node_modules/.package-lock.json ${API_DIR}/package-lock.json target/wasm32*
 
-rustwasmc clean
+# rustwasmc clean
 # wasm-pack build --debug
-wasm-pack build --debug --target nodejs
+wasm-pack build --release --target nodejs
 # rustwasmc build --target deno
 # rustwasmc build --target nodejs
 # rustwasmc build

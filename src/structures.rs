@@ -535,42 +535,113 @@ impl Structure {
         let mut stringified_structures = String::new();
 
         for structure in all_structures {
-            let stype_txt = match structure.stype.clone() {
-                Type::TEXT => "text".to_string(),
-                Type::EMAIL => "email".to_string(),
-                Type::PASSWORD => "password".to_string(),
-                Type::RICHTEXT => "richtext".to_string(),
-                Type::NUMBER => "number".to_string(),
-                Type::ENUM => "enum".to_string(),
-                Type::DATE => "date".to_string(),
-                Type::MEDIA => "media".to_string(),
-                Type::BOOLEAN => "bool".to_string(),
-                Type::UID => "uid".to_string(),
-                Type::JSON => "json".to_string(),
-                Type::CUSTOM(txt) => txt.clone(),
-            };
-
             stringified_structures = format!(
-                "{}{}{}|{}|{}|{}|{}|{}|{}|{}|{}|{}",
+                "{}{}{}",
                 stringified_structures,
                 if stringified_structures.chars().count() > 1 {
                     "%"
                 } else {
                     ""
                 },
-                structure.id,
-                structure.name,
-                stype_txt,
-                structure.default,
-                structure.min,
-                structure.max,
-                structure.encrypted,
-                structure.unique,
-                structure.regex_pattern,
-                structure.array,
+                Structure::to_string(structure.clone()),
             );
         }
 
         stringified_structures
     }
+
+    pub fn from_string(structure_str: &str) -> Result<Structure, String> {
+        let current_structure = structure_str.split("|").collect::<Vec<&str>>();
+        let mut tmp_structures = Vec::<Structure>::new();
+
+        if try_add_structure(&current_structure, &mut tmp_structures) {
+            return Ok(tmp_structures[0].clone());
+        }
+
+        Err(String::from("Error: Wrong format for Structure data"))
+    }
+
+    pub fn to_string(structure: Structure) -> String {
+        let stype_txt = match structure.stype.clone() {
+            Type::TEXT => "text".to_string(),
+            Type::EMAIL => "email".to_string(),
+            Type::PASSWORD => "password".to_string(),
+            Type::RICHTEXT => "richtext".to_string(),
+            Type::NUMBER => "number".to_string(),
+            Type::ENUM => "enum".to_string(),
+            Type::DATE => "date".to_string(),
+            Type::MEDIA => "media".to_string(),
+            Type::BOOLEAN => "bool".to_string(),
+            Type::UID => "uid".to_string(),
+            Type::JSON => "json".to_string(),
+            Type::CUSTOM(txt) => txt.clone(),
+        };
+
+        format!(
+            "{}|{}|{}|{}|{}|{}|{}|{}|{}|{}",
+            structure.id,
+            structure.name,
+            stype_txt,
+            structure.default,
+            structure.min,
+            structure.max,
+            structure.encrypted,
+            structure.unique,
+            structure.regex_pattern,
+            structure.array
+        )
+    }
+}
+
+pub fn try_add_structure(array: &Vec<&str>, final_structures: &mut Vec<Structure>) -> bool {
+    if array.len() <= 1 {
+        return false;
+    }
+
+    let min = array[4].parse::<usize>();
+    if let Err(e) = min {
+        println!("{}", e);
+        return false;
+    }
+
+    let max = array[5].parse::<usize>();
+    if let Err(e) = max {
+        println!("{}", e);
+        return false;
+    }
+
+    let encrypted = match array[6] {
+        "true" => true,
+        _ => false,
+    };
+
+    let unique = match array[7] {
+        "true" => true,
+        _ => false,
+    };
+
+    let is_array = match array[9] {
+        "true" => true,
+        _ => false,
+    };
+
+    let create_structure = Structure::create(
+        final_structures,
+        array[0],
+        array[1],
+        array[2],
+        array[3],
+        min.unwrap(),
+        max.unwrap(),
+        encrypted,
+        unique,
+        array[8],
+        is_array,
+    );
+
+    if let Err(e) = create_structure {
+        println!("{}", e);
+    }
+
+    true
 }
