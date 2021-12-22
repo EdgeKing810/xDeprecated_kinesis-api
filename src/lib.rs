@@ -2,10 +2,11 @@
 #[macro_use]
 extern crate magic_crypt;
 
-use bindings_user::{get_users_from_str, login_user, delete_user};
+use bindings_user::{delete_user, get_users_from_str, login_user};
 use user::User;
 use wasm_bindgen::prelude::*;
 
+mod bcrypt;
 mod collection;
 mod config;
 mod custom_structures;
@@ -15,10 +16,12 @@ mod mappings;
 mod project;
 mod structures;
 mod user;
-mod bcrypt;
 
 #[path = "bindings/bindings_user.rs"]
 mod bindings_user;
+
+#[path = "bindings/bindings_mappings.rs"]
+mod bindings_mappings;
 
 const MAPPINGS_PATH: &str = "data/mappings.txt";
 

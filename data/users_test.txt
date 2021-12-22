@@ -1,2 +1,0 @@
-c98fb693-fb96-466e-b245-97c3ef49d39f;Test;Tester;test;test@test.com;$2b$10$NMlJ/PLLMdUoVRoP/Tvi5eGUBx/OyHrpiJhm8qT53dV0KQk6Xuahe;0
-c5b00c5c-c039-4574-bbf8-992dc71a2249;Test;Tester;test2;test2@test.com;$2b$10$pPkzocDaCOO0UPM.JLn0ie8qFuWXP5Ai4//JjxNUnR2YD4PLKnA2u;2

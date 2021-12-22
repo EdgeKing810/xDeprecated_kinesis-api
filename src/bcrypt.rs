@@ -20,9 +20,9 @@ use alloc::{
     vec::Vec,
 };
 
-use core::{fmt, str::FromStr};
 #[cfg(any(feature = "alloc", feature = "std"))]
-use {core::convert::AsRef};
+use core::convert::AsRef;
+use core::{fmt, str::FromStr};
 
 // Cost constants
 const MIN_COST: u32 = 4;
@@ -211,7 +211,7 @@ pub fn hash<P: AsRef<[u8]>>(password: P, cost: u32) -> BcryptResult<String> {
 /// The function returns a result structure and allows to format the hash in different versions.
 pub fn hash_with_result<P: AsRef<[u8]>>(password: P, cost: u32) -> BcryptResult<HashParts> {
     let salt: Vec<u8> = repeat_with(|| fastrand::u8(..)).take(16).collect();
-    
+
     // let salt = {
     //     let mut s = [0u8; 16];
     //     getrandom(&mut s).map(|_| s)
@@ -276,9 +276,7 @@ impl fmt::Display for BcryptError {
             BcryptError::CostNotAllowed(ref cost) => write!(
                 f,
                 "Cost needs to be between {} and {}, got {}",
-                MIN_COST,
-                MAX_COST,
-                cost
+                MIN_COST, MAX_COST, cost
             ),
             BcryptError::InvalidPassword => write!(f, "Invalid password: contains NULL byte"),
             BcryptError::InvalidPrefix(ref prefix) => write!(f, "Invalid Prefix: {}", prefix),

@@ -1,8 +1,8 @@
+use crate::encryption::EncryptionKey;
 use crate::io::{fetch_file, save_file};
 use regex::Regex;
-use crate::encryption::EncryptionKey;
 
-use crate::bcrypt::{DEFAULT_COST, hash, verify};
+use crate::bcrypt::{hash, verify, DEFAULT_COST};
 
 #[derive(Debug, Clone)]
 pub enum Role {
@@ -200,8 +200,7 @@ impl User {
             return Err(String::from("Error: User not found"));
         }
 
-        let correct_password =
-            verify(password.trim(), &*found_user.as_ref().unwrap().password);
+        let correct_password = verify(password.trim(), &*found_user.as_ref().unwrap().password);
         if !correct_password.is_ok() {
             return Err(String::from("Error: Password mismatch"));
         }

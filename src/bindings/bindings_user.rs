@@ -4,7 +4,7 @@ use wasm_bindgen::prelude::*;
 pub fn get_users_from_str(users: &str) -> Vec<User> {
     let mut all_users = Vec::<User>::new();
 
-    for user in users.split(";").collect::<Vec<&str>>() {
+    for user in users.split("\n").collect::<Vec<&str>>() {
         let tmp_user = User::from_string(user);
         all_users.push(tmp_user);
     }

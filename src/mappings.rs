@@ -145,6 +145,16 @@ impl Mapping {
     pub fn get_file_name(self: &Self) -> String {
         self.file_name.clone()
     }
+
+    pub fn to_string(mapping: Mapping) -> String {
+        format!("{}={}", mapping.id, mapping.file_name)
+    }
+
+    pub fn from_string(mapping_str: &str) -> Mapping {
+        let current_mapping = mapping_str.split("=").collect::<Vec<&str>>();
+
+        Mapping::create_no_check(current_mapping[0], current_mapping[1])
+    }
 }
 
 pub fn fetch_all_mappings(path: &str, encryption_key: &String) -> Vec<Mapping> {
@@ -157,8 +167,7 @@ pub fn fetch_all_mappings(path: &str, encryption_key: &String) -> Vec<Mapping> {
     let mut final_mappings: Vec<Mapping> = Vec::<Mapping>::new();
 
     for mapping in individual_mappings {
-        let current_mapping = mapping.split("=").collect::<Vec<&str>>();
-        let tmp_mapping = Mapping::create_no_check(current_mapping[0], current_mapping[1]);
+        let tmp_mapping = Mapping::from_string(mapping);
         final_mappings.push(tmp_mapping);
     }
 
@@ -169,15 +178,14 @@ pub fn save_all_mappings(mappings: &Vec<Mapping>, path: &str, encryption_key: &S
     let mut stringified_mappings = String::new();
     for mapping in mappings {
         stringified_mappings = format!(
-            "{}{}{}={}",
+            "{}{}{}",
             stringified_mappings,
             if stringified_mappings.chars().count() > 1 {
                 "\n"
             } else {
                 ""
             },
-            mapping.id,
-            mapping.file_name
+            Mapping::to_string(mapping.clone())
         );
     }
 

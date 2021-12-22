@@ -12,6 +12,7 @@ use project::{fetch_all_projects, save_all_projects, Project};
 use structures::Structure;
 use user::{fetch_all_users, save_all_users, User};
 
+mod bcrypt;
 mod collection;
 mod config;
 mod custom_structures;
@@ -22,7 +23,6 @@ mod project;
 mod structures;
 mod tests;
 mod user;
-mod bcrypt;
 
 #[path = "bindings/bindings_user.rs"]
 mod bindings_user;
