@@ -290,6 +290,24 @@ impl Project {
 
         Ok(())
     }
+
+    pub fn to_string(project: Project) -> String {
+        format!(
+            "{};{};{};{}",
+            project.id, project.name, project.description, project.api_path
+        )
+    }
+
+    pub fn from_string(project_str: &str) -> Project {
+        let current_project = project_str.split(";").collect::<Vec<&str>>();
+
+        Project::create_no_check(
+            current_project[0],
+            current_project[1],
+            current_project[2],
+            current_project[3],
+        )
+    }
 }
 
 pub fn fetch_all_projects(path: String, encryption_key: &String) -> Vec<Project> {
@@ -302,14 +320,7 @@ pub fn fetch_all_projects(path: String, encryption_key: &String) -> Vec<Project>
     let mut final_projects: Vec<Project> = Vec::<Project>::new();
 
     for project in individual_projects {
-        let current_project = project.split(";").collect::<Vec<&str>>();
-
-        let tmp_project = Project::create_no_check(
-            current_project[0],
-            current_project[1],
-            current_project[2],
-            current_project[3],
-        );
+        let tmp_project = Project::from_string(project);
         final_projects.push(tmp_project);
     }
 
@@ -321,17 +332,14 @@ pub fn save_all_projects(projects: &Vec<Project>, path: String, encryption_key: 
 
     for project in projects {
         stringified_projects = format!(
-            "{}{}{};{};{};{}",
+            "{}{}{}",
             stringified_projects,
             if stringified_projects.chars().count() > 1 {
                 "\n"
             } else {
                 ""
             },
-            project.id,
-            project.name,
-            project.description,
-            project.api_path,
+            Project::to_string(project.clone()),
         );
     }
 

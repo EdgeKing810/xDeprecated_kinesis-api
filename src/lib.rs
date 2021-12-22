@@ -17,11 +17,12 @@ mod project;
 mod structures;
 mod user;
 
-#[path = "bindings/bindings_user.rs"]
-mod bindings_user;
-
 #[path = "bindings/bindings_mappings.rs"]
 mod bindings_mappings;
+#[path = "bindings/bindings_project.rs"]
+mod bindings_project;
+#[path = "bindings/bindings_user.rs"]
+mod bindings_user;
 
 const MAPPINGS_PATH: &str = "data/mappings.txt";
 
