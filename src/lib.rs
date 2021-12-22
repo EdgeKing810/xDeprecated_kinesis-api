@@ -26,6 +26,8 @@ mod bindings_project;
 #[path = "bindings/bindings_user.rs"]
 mod bindings_user;
 
+#[path = "bindings/bindings_collection.rs"]
+mod bindings_collection;
 #[path = "bindings/bindings_custom_structures.rs"]
 mod bindings_custom_structures;
 #[path = "bindings/bindings_structures.rs"]
@@ -39,12 +41,12 @@ pub fn get_mappings_path() -> String {
 }
 
 #[wasm_bindgen]
-pub fn moggt(users: &str, auth: &str, password: &str) -> String {
+pub fn my_user_test(users: &str, auth: &str, password: &str) -> String {
     login_user(users, auth, password)
 }
 
 #[wasm_bindgen]
-pub fn login_ggt_user(users: &str, auth: &str, password: &str) -> String {
+pub fn login_user_test(users: &str, auth: &str, password: &str) -> String {
     let mut all_users = get_users_from_str(users);
     let result = User::login(&mut all_users, auth, password);
 

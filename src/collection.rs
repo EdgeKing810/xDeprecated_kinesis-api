@@ -531,33 +531,40 @@ impl Collection {
 
         Ok(())
     }
-}
 
-pub fn fetch_all_collections(path: String, encryption_key: &String) -> Vec<Collection> {
-    let all_collections_raw = fetch_file(path.clone(), encryption_key);
+    pub fn to_string(collection: Collection) -> String {
+        let stringified_structures = Structure::stringify(&collection.structures);
 
-    let individual_collections = all_collections_raw
-        .split("\n")
-        .filter(|line| line.chars().count() >= 3);
+        let stringified_custom_structures =
+            CustomStructure::stringify(&collection.custom_structures);
 
-    let mut final_collections: Vec<Collection> = Vec::<Collection>::new();
+        format!(
+            "{};{};{};{}>{}>{}",
+            collection.id,
+            collection.project_id,
+            collection.name,
+            collection.description,
+            stringified_structures,
+            stringified_custom_structures
+        )
+    }
 
-    for collection in individual_collections {
-        let current_collection = collection.split(";").collect::<Vec<&str>>();
+    pub fn from_string(mut all_collections: &mut Vec<Collection>, collection_str: &str) -> String {
+        let current_collection = collection_str.split(";").collect::<Vec<&str>>();
 
         let collection_id = current_collection[0];
         let create_collection = Collection::create(
-            &mut final_collections,
+            &mut all_collections,
             current_collection[0],
             current_collection[1],
             current_collection[2],
             current_collection[3].split(">").collect::<Vec<&str>>()[0],
         );
         if let Err(e) = create_collection {
-            println!("{}", e);
+            return e;
         }
 
-        let current_structures = collection.split(">").collect::<Vec<&str>>()[1];
+        let current_structures = collection_str.split(">").collect::<Vec<&str>>()[1];
         let individual_structures = current_structures.split("%").collect::<Vec<&str>>();
         let mut final_structures: Vec<Structure> = vec![];
         for structure in individual_structures {
@@ -568,7 +575,7 @@ pub fn fetch_all_collections(path: String, encryption_key: &String) -> Vec<Colle
             }
         }
 
-        let current_custom_structures = collection.split(">").collect::<Vec<&str>>()[2];
+        let current_custom_structures = collection_str.split(">").collect::<Vec<&str>>()[2];
         let individual_custom_structures =
             current_custom_structures.split("#").collect::<Vec<&str>>();
         let mut final_custom_structures: Vec<CustomStructure> = vec![];
@@ -585,7 +592,7 @@ pub fn fetch_all_collections(path: String, encryption_key: &String) -> Vec<Colle
                 current_custom_structure[1],
             );
             if let Err(e) = create_custom_structure {
-                println!("{}", e);
+                return e;
             }
 
             let current_structures = current_custom_structure[2..].join("|");
@@ -605,27 +612,43 @@ pub fn fetch_all_collections(path: String, encryption_key: &String) -> Vec<Colle
                 final_structures_custom,
             );
             if let Err(e) = custom_set_structures {
-                println!("{}", e);
+                return e;
             }
         }
 
         let set_structures = Collection::set_structures(
-            &mut final_collections,
+            &mut all_collections,
             &collection_id.to_string(),
             final_structures,
         );
         if let Err(e) = set_structures {
-            println!("{}", e);
+            return e;
         }
 
         let set_custom_structures = Collection::set_custom_structures(
-            &mut final_collections,
+            &mut all_collections,
             &collection_id.to_string(),
             final_custom_structures,
         );
         if let Err(e) = set_custom_structures {
-            println!("{}", e);
+            return e;
         }
+
+        String::new()
+    }
+}
+
+pub fn fetch_all_collections(path: String, encryption_key: &String) -> Vec<Collection> {
+    let all_collections_raw = fetch_file(path.clone(), encryption_key);
+
+    let individual_collections = all_collections_raw
+        .split("\n")
+        .filter(|line| line.chars().count() >= 3);
+
+    let mut final_collections: Vec<Collection> = Vec::<Collection>::new();
+
+    for collection in individual_collections {
+        Collection::from_string(&mut final_collections, collection);
     }
 
     final_collections
@@ -635,25 +658,15 @@ pub fn save_all_collections(collections: &Vec<Collection>, path: String, encrypt
     let mut stringified_collections = String::new();
 
     for collection in collections {
-        let stringified_structures = Structure::stringify(&collection.structures);
-
-        let stringified_custom_structures =
-            CustomStructure::stringify(&collection.custom_structures);
-
         stringified_collections = format!(
-            "{}{}{};{};{};{}>{}>{}",
+            "{}{}{}",
             stringified_collections,
             if stringified_collections.chars().count() > 1 {
                 "\n"
             } else {
                 ""
             },
-            collection.id,
-            collection.project_id,
-            collection.name,
-            collection.description,
-            stringified_structures,
-            stringified_custom_structures
+            Collection::to_string(collection.clone())
         );
     }
 
