@@ -734,7 +734,9 @@ fn test_incorrect_collection() {
             Structure::update_default(&mut all_structures, &"title".to_string(), "test@");
         assert_eq!(
             test_structure,
-            Err(String::from("Error: default contains an invalid character"))
+            Err(String::from(
+                "Error: default_val contains an invalid character"
+            ))
         );
 
         let test_structure =

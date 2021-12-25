@@ -50,7 +50,7 @@ pub fn create_structure(
     id: &str,
     name: &str,
     stype_txt: &str,
-    default: &str,
+    default_val: &str,
     min: usize,
     max: usize,
     encrypted: bool,
@@ -64,7 +64,7 @@ pub fn create_structure(
         id,
         name,
         stype_txt,
-        default,
+        default_val,
         min,
         max,
         encrypted,
@@ -117,9 +117,9 @@ pub fn update_structure_type(structures: &str, id: &str, stype: &str) -> String 
 }
 
 #[wasm_bindgen]
-pub fn update_structure_default(structures: &str, id: &str, default: &str) -> String {
+pub fn update_structure_default(structures: &str, id: &str, default_val: &str) -> String {
     let mut all_structures = get_structures_from_str(structures);
-    let result = Structure::update_default(&mut all_structures, &id.to_string(), default);
+    let result = Structure::update_default(&mut all_structures, &id.to_string(), default_val);
 
     if let Err(e) = result {
         return e;

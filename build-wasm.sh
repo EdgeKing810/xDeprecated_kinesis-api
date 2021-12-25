@@ -11,7 +11,7 @@ rm -rf ${API_DIR}/node_modules/${NAME} ${API_DIR}/node_modules/.package-lock.jso
 
 # rustwasmc clean
 # wasm-pack build --debug
-wasm-pack build --release --target nodejs
+wasm-pack build --debug --target nodejs
 # rustwasmc build --target deno
 # rustwasmc build --target nodejs
 # rustwasmc build

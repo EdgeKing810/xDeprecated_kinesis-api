@@ -27,7 +27,7 @@ pub struct Structure {
     pub id: String,
     name: String,
     stype: Type,
-    default: String,
+    default_val: String,
     min: usize,
     max: usize,
     encrypted: bool,
@@ -42,7 +42,7 @@ impl Structure {
         id: &str,
         name: &str,
         stype_txt: &str,
-        default: &str,
+        default_val: &str,
         min: usize,
         max: usize,
         encrypted: bool,
@@ -57,7 +57,7 @@ impl Structure {
         //         &*new_id.to_string(),
         //         name,
         //         stype_txt,
-        //         default,
+        //         default_val,
         //         min,
         //         max,
         //         encrypted,
@@ -76,7 +76,7 @@ impl Structure {
             id: tmp_id.clone(),
             name: "".to_string(),
             stype: Type::default(),
-            default: "".to_string(),
+            default_val: "".to_string(),
             min: 0,
             max: 0,
             encrypted: false,
@@ -113,7 +113,7 @@ impl Structure {
         }
 
         if !has_error {
-            let default_update = Self::update_default(all_structures, &new_id, default);
+            let default_update = Self::update_default(all_structures, &new_id, default_val);
             if let Err(e) = default_update {
                 has_error = true;
                 println!("Error: {}", e);
@@ -328,21 +328,23 @@ impl Structure {
     pub fn update_default(
         all_structures: &mut Vec<Structure>,
         id: &String,
-        default: &str,
+        default_val: &str,
     ) -> Result<(), String> {
         let mut found_structure: Option<Structure> = None;
 
-        if !String::from(default)
+        if !String::from(default_val)
             .chars()
             .all(|c| c != ';' && c != '@' && c != '>' && c != '#')
         {
-            return Err(String::from("Error: default contains an invalid character"));
+            return Err(String::from(
+                "Error: default_val contains an invalid character",
+            ));
         }
 
         for structure in all_structures.iter_mut() {
             if structure.id == *id {
                 found_structure = Some(structure.clone());
-                structure.default = String::from(default.trim());
+                structure.default_val = String::from(default_val.trim());
                 break;
             }
         }
@@ -516,7 +518,7 @@ impl Structure {
                 id: structure.id.clone(),
                 name: structure.name.clone(),
                 stype: structure.stype.clone(),
-                default: structure.default.clone(),
+                default_val: structure.default_val.clone(),
                 min: structure.min.clone(),
                 max: structure.max.clone(),
                 encrypted: structure.encrypted.clone(),
@@ -582,7 +584,7 @@ impl Structure {
             structure.id,
             structure.name,
             stype_txt,
-            structure.default,
+            structure.default_val,
             structure.min,
             structure.max,
             structure.encrypted,
