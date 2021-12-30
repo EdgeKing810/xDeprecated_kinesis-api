@@ -18,9 +18,16 @@
   "license": "MIT",
   "type": "module",
   "dependencies": {
+    "dotenv": "^10.0.0",
+    "env": "^0.0.2",
     "kinesis-db": "file:../pkg"
   },
   "devDependencies": {
     "hello-wasm-pack": "^0.1.0"
+  },
+  "browser": {
+    "fs": false,
+    "path": false,
+    "os": false
   }
 }

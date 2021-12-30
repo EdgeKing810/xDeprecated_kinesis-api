@@ -1,4 +1,4 @@
-import pkg from 'kinesis-db/kinesis_db.js';
+import pkg from '../pkg/kinesis_db.js';
 
 // import {
 //   get_mappings_path,
