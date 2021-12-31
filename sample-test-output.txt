@@ -6,14 +6,14 @@ test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; fini
 
 running 7 tests
 test tests::test_configs ... ok
-test tests::test_mappings ... ok
 test tests::test_incorrect_collection ... ok
+test tests::test_mappings ... ok
 test tests::test_correct_collection ... ok
 test tests::test_projects ... ok
 test tests::test_encryption ... ok
 test tests::test_users ... ok
 
-test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 21.23s
+test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 4.55s
 
 
 running 0 tests

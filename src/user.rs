@@ -1,6 +1,6 @@
 use crate::encryption::EncryptionKey;
 use crate::io::{fetch_file, save_file};
-use argonautica::{Hasher, Verifier};
+use argon2::{self, Config};
 use regex::Regex;
 
 #[derive(Debug, Clone)]
@@ -92,7 +92,6 @@ impl User {
         email: &str,
         password: &str,
         role_numeric: u32,
-        encryption_key: &String,
     ) -> Result<(), String> {
         return User::create(
             all_users,
@@ -102,7 +101,6 @@ impl User {
             email,
             password,
             role_numeric,
-            encryption_key,
         );
     }
 
@@ -114,7 +112,6 @@ impl User {
         email: &str,
         password: &str,
         role_numeric: u32,
-        encryption_key: &String,
     ) -> Result<(), String> {
         let id = EncryptionKey::generate_uuid(8);
         let uid = id.to_string();
@@ -122,7 +119,8 @@ impl User {
         let mut has_error: bool = false;
         let mut latest_error: String = String::new();
 
-        let mut hasher = Hasher::default();
+        let salt = EncryptionKey::generate_uuid(25);
+        let config = Config::default();
 
         let new_user = User {
             id: uid.clone(),
@@ -130,10 +128,7 @@ impl User {
             last_name: "".to_string(),
             username: "".to_string(),
             email: "".to_string(),
-            password: hasher
-                .with_password("tmp")
-                .with_secret_key(encryption_key)
-                .hash()
+            password: argon2::hash_encoded("tmp".as_bytes(), salt.as_bytes(), &config)
                 .unwrap()
                 .to_string(),
             role: Role::default(),
@@ -166,7 +161,7 @@ impl User {
         }
 
         if !has_error {
-            let password_update = Self::update_password(all_users, &uid, password, encryption_key);
+            let password_update = Self::update_password(all_users, &uid, password);
             if let Err(e) = password_update {
                 has_error = true;
                 println!("Error: {}", e);
@@ -195,12 +190,7 @@ impl User {
         Ok(())
     }
 
-    pub fn login(
-        all_users: &Vec<User>,
-        auth: &str,
-        password: &str,
-        encryption_key: &String,
-    ) -> Result<User, String> {
+    pub fn login(all_users: &Vec<User>, auth: &str, password: &str) -> Result<User, String> {
         let mut found_user: Option<User> = None;
 
         for user in all_users.iter() {
@@ -214,12 +204,8 @@ impl User {
             return Err(String::from("Error: User not found"));
         }
 
-        let mut verifier = Verifier::default();
-        let correct_password = verifier
-            .with_hash(found_user.clone().unwrap().password)
-            .with_password(password)
-            .with_secret_key(encryption_key)
-            .verify();
+        let correct_password =
+            argon2::verify_encoded(&found_user.clone().unwrap().password, password.as_bytes());
 
         if !correct_password.is_ok() {
             return Err(String::from("Error: Password mismatch"));
@@ -371,7 +357,6 @@ impl User {
         all_users: &mut Vec<User>,
         id: &String,
         password: &str,
-        encryption_key: &String,
     ) -> Result<(), String> {
         let mut found_user: Option<User> = None;
 
@@ -415,12 +400,11 @@ impl User {
 
         for user in all_users.iter_mut() {
             if user.id == id.to_string() {
-                let mut hasher = Hasher::default();
+                let salt = EncryptionKey::generate_uuid(25);
+                let config = Config::default();
+
                 found_user = Some(user.clone());
-                user.password = hasher
-                    .with_password(password.trim())
-                    .with_secret_key(encryption_key)
-                    .hash()
+                user.password = argon2::hash_encoded(password.as_bytes(), salt.as_bytes(), &config)
                     .unwrap()
                     .to_string();
                 break;

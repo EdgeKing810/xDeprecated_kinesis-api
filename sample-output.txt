@@ -4,12 +4,12 @@ Projects saved!
 Configs saved!
 Ok(
     User {
-        id: "1YLnvprk-IXPZkbMu-b8oPP7nj-l53f8jWg-7y7hHlez-4048",
+        id: "9CO7mb19-nYc63rom-IE80cmuP-Pq8P7eOC-DyK4esQ4-613",
         first_name: "Kishan",
         last_name: "Takoordyal",
         username: "EdgeKing810",
         email: "kishan@konnect.dev",
-        password: "$argon2id$v=19$m=4096,t=192,p=12$KQ6IMhidW5bkirO765oNotpA8AHVwsiadP5hGU8UJww$6XuujPdCWD0CIZJ7unAGcu10N51xQVuzkVaLy6phQCg",
+        password: "$argon2i$v=19$m=4096,t=3,p=1$NWlJNnpaWFphOVhaYnBlcjhMckJ4ODV4bS10MmlLTnhXaDFoR1cwOTFpTmxRb21RMTA0LVNpdGZOQXJqY1Y4OHhnQ3VkZGZWYW9BM0ktYm1XMmhYaDlXMUZQNGpQVVpWN2NiY2lTWi1RcDlwREYyNDFCekhieGIyek1DWTRCMTh2LTEwMzY$UZNl+3H22scjvBFSNX4jKM2DvMHgnHFzmJ1SuyLoi3A",
         role: ROOT,
     },
 )
