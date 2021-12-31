@@ -64,7 +64,7 @@ pub fn user_exists_email(users: &str, email: &str) -> usize {
     0
 }
 
-#[wasm_bindgen]
+/*#[wasm_bindgen]
 pub fn register_user(
     users: &str,
     first_name: &str,
@@ -90,12 +90,12 @@ pub fn register_user(
     }
 
     String::from("OK")
-}
+}*/
 
 #[wasm_bindgen]
-pub fn login_user(users: &str, auth: &str, password: &str) -> String {
+pub fn login_user(users: &str, auth: &str, password: &str, encryption_key: &str) -> String {
     let mut all_users = get_users_from_str(users);
-    let result = User::login(&mut all_users, auth, password);
+    let result = User::login(&mut all_users, auth, password, &encryption_key.to_string());
 
     if let Err(e) = result {
         return e;
@@ -141,9 +141,14 @@ pub fn update_user_email(users: &str, id: &str, email: &str) -> String {
 }
 
 #[wasm_bindgen]
-pub fn update_user_password(users: &str, id: &str, password: &str) -> String {
+pub fn update_user_password(users: &str, id: &str, password: &str, encryption_key: &str) -> String {
     let mut all_users = get_users_from_str(users);
-    let result = User::update_password(&mut all_users, &id.to_string(), password);
+    let result = User::update_password(
+        &mut all_users,
+        &id.to_string(),
+        password,
+        &encryption_key.to_string(),
+    );
 
     if let Err(e) = result {
         return e;

@@ -57,6 +57,7 @@ fn test_mappings() {
 #[test]
 fn test_users() {
     let file_name: &str = "data/users_test.txt";
+    let encryption_key = String::from("encrypt10nK3Y");
     remove_file(file_name.to_string());
 
     let mut all_users = fetch_all_users(file_name.to_string(), &String::new());
@@ -70,6 +71,7 @@ fn test_users() {
         "test@test.com",
         "Test123*",
         0,
+        &encryption_key,
     );
     assert_eq!(test_user, Ok(()));
 
@@ -81,6 +83,7 @@ fn test_users() {
         "test@test2.com",
         "Test123*",
         0,
+        &encryption_key,
     );
     assert_eq!(
         test_user2,
@@ -97,6 +100,7 @@ fn test_users() {
         "test@test2.com",
         "Test123*",
         0,
+        &encryption_key,
     );
     assert_eq!(
         test_user2,
@@ -113,6 +117,7 @@ fn test_users() {
         "test@test2.com",
         "Test123*",
         0,
+        &encryption_key,
     );
     assert_eq!(
         test_user2,
@@ -127,6 +132,7 @@ fn test_users() {
         "test@test.com",
         "Test123*",
         0,
+        &encryption_key,
     );
     assert_eq!(test_user2, Err(String::from("Error: email already taken")));
 
@@ -138,6 +144,7 @@ fn test_users() {
         "test@@test2.teeeeeeeeest",
         "Test123*",
         0,
+        &encryption_key,
     );
     assert_eq!(
         test_user2,
@@ -152,6 +159,7 @@ fn test_users() {
         "test@test2..teeeeeeeeest",
         "Test123*",
         0,
+        &encryption_key,
     );
     assert_eq!(
         test_user2,
@@ -166,6 +174,7 @@ fn test_users() {
         "test@test2.com",
         "Test",
         0,
+        &encryption_key,
     );
     assert_eq!(
         test_user2,
@@ -182,6 +191,7 @@ fn test_users() {
         "test@test2.com",
         "testtest",
         0,
+        &encryption_key,
     );
     assert_eq!(
         test_user2,
@@ -198,6 +208,7 @@ fn test_users() {
         "test@test2.com",
         "TESTTEST",
         0,
+        &encryption_key,
     );
     assert_eq!(
         test_user2,
@@ -214,6 +225,7 @@ fn test_users() {
         "test@test2.com",
         "testTEST",
         0,
+        &encryption_key,
     );
     assert_eq!(
         test_user2,
@@ -230,6 +242,7 @@ fn test_users() {
         "test@test2.com",
         "Test123;",
         0,
+        &encryption_key,
     );
     assert_eq!(
         test_user2,
@@ -246,10 +259,11 @@ fn test_users() {
         "test@test2.com",
         "Test123*&^()[]{}*-_",
         0,
+        &encryption_key,
     );
     assert_eq!(test_user2, Ok(()));
 
-    let login_test_user2 = User::login(&all_users, "te_st", "Test123*&^()[]{}*-_");
+    let login_test_user2 = User::login(&all_users, "te_st", "Test123*&^()[]{}*-_", &encryption_key);
 
     if let Ok(successful_login) = login_test_user2 {
         let test_user2 = User::update_name(&mut all_users, &successful_login.id, "Test", "Tester");
@@ -261,7 +275,12 @@ fn test_users() {
         let test_user2 = User::update_email(&mut all_users, &successful_login.id, "test2@test.com");
         assert_eq!(test_user2, Ok(()));
 
-        let test_user2 = User::update_password(&mut all_users, &successful_login.id, "Test123*");
+        let test_user2 = User::update_password(
+            &mut all_users,
+            &successful_login.id,
+            "Test123*",
+            &encryption_key,
+        );
         assert_eq!(test_user2, Ok(()));
 
         let test_user2 = User::update_role(&mut all_users, &successful_login.id, 2);

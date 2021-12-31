@@ -1,6 +1,7 @@
 #![allow(dead_code)]
 #[macro_use]
 extern crate magic_crypt;
+extern crate argonautica;
 
 use collection::{fetch_all_collections, save_all_collections, Collection};
 use config::{fetch_all_configs, save_all_configs, Config};
@@ -12,7 +13,6 @@ use project::{fetch_all_projects, save_all_projects, Project};
 use structures::Structure;
 use user::{fetch_all_users, save_all_users, User};
 
-mod bcrypt;
 mod collection;
 mod config;
 mod custom_structures;
@@ -36,12 +36,20 @@ fn main() {
 
 fn initialize() {
     let all_mappings = initialize_mappings();
-    let all_users: Vec<User> = initialize_users(&all_mappings);
+    let all_users: Vec<User> = initialize_users(&all_mappings, &get_encryption_key(&all_mappings));
     let all_projects: Vec<Project> = initialize_projects(&all_mappings);
     let _all_configs: Vec<Config> = initialize_configs(&all_mappings);
     let all_collections: Vec<Collection> = initialize_collections(&all_mappings);
 
-    println!("{:#?}", User::login(&all_users, "EdgeKing810", "Test123*"));
+    println!(
+        "{:#?}",
+        User::login(
+            &all_users,
+            "EdgeKing810",
+            "Test123*",
+            &get_encryption_key(&all_mappings)
+        )
+    );
 
     println!("Projects: {:#?}", all_projects);
 
@@ -96,7 +104,7 @@ fn initialize_mappings() -> Vec<Mapping> {
     fetched_mappings
 }
 
-fn initialize_users(mappings: &Vec<Mapping>) -> Vec<User> {
+fn initialize_users(mappings: &Vec<Mapping>, encryption_key: &String) -> Vec<User> {
     let all_users_path = get_file_name("users", mappings);
     let mut all_users = Vec::<User>::new();
 
@@ -119,6 +127,7 @@ fn initialize_users(mappings: &Vec<Mapping>) -> Vec<User> {
             "kishan@konnect.dev",
             "Test123*",
             0,
+            encryption_key,
         );
         if let Err(e) = create_user {
             println!("{}", e);

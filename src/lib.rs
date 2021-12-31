@@ -1,12 +1,12 @@
 #![allow(dead_code)]
 #[macro_use]
 extern crate magic_crypt;
+extern crate argonautica;
 
 use bindings_user::{delete_user, get_users_from_str, login_user};
 use user::User;
 use wasm_bindgen::prelude::*;
 
-mod bcrypt;
 mod collection;
 mod config;
 mod custom_structures;
@@ -41,14 +41,14 @@ pub fn get_mappings_path() -> String {
 }
 
 #[wasm_bindgen]
-pub fn my_user_test(users: &str, auth: &str, password: &str) -> String {
-    login_user(users, auth, password)
+pub fn my_user_test(users: &str, auth: &str, password: &str, encryption_key: &str) -> String {
+    login_user(users, auth, password, &encryption_key.to_string())
 }
 
 #[wasm_bindgen]
-pub fn login_user_test(users: &str, auth: &str, password: &str) -> String {
+pub fn login_user_test(users: &str, auth: &str, password: &str, encryption_key: &str) -> String {
     let mut all_users = get_users_from_str(users);
-    let result = User::login(&mut all_users, auth, password);
+    let result = User::login(&mut all_users, auth, password, &encryption_key.to_string());
 
     if let Err(e) = result {
         return e;
