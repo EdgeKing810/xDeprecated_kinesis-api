@@ -1,7 +1,15 @@
 use crate::encryption::EncryptionKey;
 use crate::io::{fetch_file, save_file};
-use argon2::{self, Config};
 use regex::Regex;
+use wasm_bindgen::prelude::*;
+
+#[wasm_bindgen]
+extern "C" {
+    // #[wasm_bindgen(method, js_name = hash)]
+    fn hash(s: &str, salt: &str) -> String;
+    // #[wasm_bindgen(method, js_name = verify)]
+    fn verify(s: &str, hash: &str) -> usize;
+}
 
 #[derive(Debug, Clone)]
 pub enum Role {
@@ -120,7 +128,6 @@ impl User {
         let mut latest_error: String = String::new();
 
         let salt = EncryptionKey::generate_uuid(25);
-        let config = Config::default();
 
         let new_user = User {
             id: uid.clone(),
@@ -128,9 +135,7 @@ impl User {
             last_name: "".to_string(),
             username: "".to_string(),
             email: "".to_string(),
-            password: argon2::hash_encoded("tmp".as_bytes(), salt.as_bytes(), &config)
-                .unwrap()
-                .to_string(),
+            password: hash("tmp", &*salt).to_string(),
             role: Role::default(),
         };
         all_users.push(new_user);
@@ -204,10 +209,9 @@ impl User {
             return Err(String::from("Error: User not found"));
         }
 
-        let correct_password =
-            argon2::verify_encoded(&found_user.clone().unwrap().password, password.as_bytes());
+        let correct_password = verify(password, &*found_user.clone().unwrap().password);
 
-        if !correct_password.is_ok() {
+        if correct_password != 1 {
             return Err(String::from("Error: Password mismatch"));
         }
 
@@ -401,12 +405,9 @@ impl User {
         for user in all_users.iter_mut() {
             if user.id == id.to_string() {
                 let salt = EncryptionKey::generate_uuid(25);
-                let config = Config::default();
 
                 found_user = Some(user.clone());
-                user.password = argon2::hash_encoded(password.as_bytes(), salt.as_bytes(), &config)
-                    .unwrap()
-                    .to_string();
+                user.password = hash(password, &*salt);
                 break;
             }
         }

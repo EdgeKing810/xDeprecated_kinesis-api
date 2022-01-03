@@ -1,7 +1,6 @@
 #![allow(dead_code)]
 #[macro_use]
 extern crate magic_crypt;
-extern crate argon2;
 
 use collection::{fetch_all_collections, save_all_collections, Collection};
 use config::{fetch_all_configs, save_all_configs, Config};

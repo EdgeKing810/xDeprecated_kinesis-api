@@ -64,33 +64,33 @@ pub fn user_exists_email(users: &str, email: &str) -> usize {
     0
 }
 
-#[wasm_bindgen]
-pub fn register_user(
-    users: &str,
-    first_name: &str,
-    last_name: &str,
-    username: &str,
-    email: &str,
-    password: &str,
-    role_numeric: u32,
-) -> String {
-    let mut all_users = get_users_from_str(users);
-    let result = User::register(
-        &mut all_users,
-        first_name,
-        last_name,
-        username,
-        email,
-        password,
-        role_numeric,
-    );
+// #[wasm_bindgen]
+// pub fn register_user(
+//     users: &str,
+//     first_name: &str,
+//     last_name: &str,
+//     username: &str,
+//     email: &str,
+//     password: &str,
+//     role_numeric: u32,
+// ) -> String {
+//     let mut all_users = get_users_from_str(users);
+//     let result = User::register(
+//         &mut all_users,
+//         first_name,
+//         last_name,
+//         username,
+//         email,
+//         password,
+//         role_numeric,
+//     );
 
-    if let Err(e) = result {
-        return e;
-    }
+//     if let Err(e) = result {
+//         return e;
+//     }
 
-    String::from("OK")
-}
+//     String::from("OK")
+// }
 
 #[wasm_bindgen]
 pub fn login_user(users: &str, auth: &str, password: &str) -> String {
@@ -140,17 +140,17 @@ pub fn update_user_email(users: &str, id: &str, email: &str) -> String {
     String::from("OK")
 }
 
-#[wasm_bindgen]
-pub fn update_user_password(users: &str, id: &str, password: &str) -> String {
-    let mut all_users = get_users_from_str(users);
-    let result = User::update_password(&mut all_users, &id.to_string(), password);
+// #[wasm_bindgen]
+// pub fn update_user_password(users: &str, id: &str, password: &str) -> String {
+//     let mut all_users = get_users_from_str(users);
+//     let result = User::update_password(&mut all_users, &id.to_string(), password);
 
-    if let Err(e) = result {
-        return e;
-    }
+//     if let Err(e) = result {
+//         return e;
+//     }
 
-    String::from("OK")
-}
+//     String::from("OK")
+// }
 
 #[wasm_bindgen]
 pub fn update_user_role(users: &str, id: &str, role_numeric: u32) -> String {

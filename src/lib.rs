@@ -1,7 +1,6 @@
 #![allow(dead_code)]
 #[macro_use]
 extern crate magic_crypt;
-extern crate argon2;
 
 use bindings_user::{delete_user, get_users_from_str, login_user};
 use user::User;
