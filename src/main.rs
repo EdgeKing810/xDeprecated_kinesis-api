@@ -24,9 +24,6 @@ mod structures;
 mod tests;
 mod user;
 
-#[path = "bindings/bindings_user.rs"]
-mod bindings_user;
-
 const MAPPINGS_PATH: &str = "data/mappings.txt";
 const TMP_PASSWORD: &str = "Test123*";
 
