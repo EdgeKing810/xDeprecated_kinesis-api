@@ -1,3 +1,5 @@
+### This version of the project is extremely outdated and the up-to-date source code and working project now lies elsewhere.
+
 # Kinesis DB
 
 This is a custom database being developped that will be a crucial component in an upcoming, even
